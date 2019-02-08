@@ -1,0 +1,5 @@
+Pyspim code base from https://github.com/yosinski/pyspim
+Created and developed by Jason Yosinski (https://github.com/yosinski)
+Used under rights of GNU GPL v3 license
+
+*** Slight modifications were made to run in Python 3. ***
