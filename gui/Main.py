@@ -28,14 +28,14 @@ slide.pack()
 label = ttk.Label(slide, text='\tWelcome to SMIP.\n Your Best Friend for Learning MIPS ', style='green/black.TLabel')
 label.pack()
 
-button1 = ttk.Button(slide, text='Start', style='green/black.TButton')
+def destroy_content(frame):
+    for widget in frame.winfo_children():
+        widget.destroy()
+
+button1 = ttk.Button(slide, text='Start', style='green/black.TButton', command=lambda:destroy_content(slide))
 button2 = ttk.Button(slide, text='Select Lesson', style='green/black.TButton')
 button3 = ttk.Button(slide, text='Practice', style='green/black.TButton')
 button4 = ttk.Button(slide, text='Exit', style='green/black.TButton', command=quit)
-
-
-def quit():
-    root.destroy()
 
 
 button1.pack()
