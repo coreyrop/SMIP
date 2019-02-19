@@ -1,12 +1,17 @@
 import tkinter as tk
 from tkinter import font
+from gui.Utilities import transfer_to
+from gui.LessonPage import draw_lesson
+from lessons.Lesson import Lesson
+
+sample_lesson = Lesson('This is a basic lesson prompt', {})
 
 
-def destroy_content(frame):
-    for widget in frame.winfo_children():
-        widget.destroy()
-
-
+"""
+Draws the main menu to the frame
+root: tkinter root to draw to 
+ttk: tkinter ttk used for styling
+"""
 def draw_menu(root, ttk):
     # Set fonts for the menu widgets.
     # print(font.families()) to print available font families.
@@ -25,7 +30,8 @@ def draw_menu(root, ttk):
                       style='green/black.TLabel')
     label.pack()
 
-    button1 = ttk.Button(slide, text='Start', style='green/black.TButton', command=lambda: destroy_content(slide))
+    button1 = ttk.Button(slide, text='Start', style='green/black.TButton',
+                         command=lambda: transfer_to(slide, lambda: draw_lesson(root, ttk, sample_lesson)))
     button2 = ttk.Button(slide, text='Select Lesson', style='green/black.TButton')
     button3 = ttk.Button(slide, text='Practice', style='green/black.TButton')
     button4 = ttk.Button(slide, text='Exit', style='green/black.TButton', command=quit)
