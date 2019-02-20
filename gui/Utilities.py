@@ -14,6 +14,6 @@ current_frame: frame who's content will be changed
 draw_function: function that will be called to draw new content
 """
 def transfer_to(current_frame, draw_function):
-    destroy_content(current_frame)
+    current_frame.destroy()
     draw_function()
     pass
