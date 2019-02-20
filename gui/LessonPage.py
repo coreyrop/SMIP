@@ -7,6 +7,8 @@ root: tkinter root to draw to
 ttk: tkinter ttk used for styling
 lesson: the lesson to be drawn to the screen
 """
+
+
 def draw_lesson(root, ttk, lesson):
     # Set fonts for the menu widgets.
     # print(font.families()) to print available font families.
@@ -20,8 +22,10 @@ def draw_lesson(root, ttk, lesson):
 
     slide = tk.Frame(master=root, bg="dodger blue")
     slide.pack()
+    menu_escape = ttk.Button(slide, text='Main Menu', style='green/black.TButton')
+    label_prompt = ttk.Label(slide, text=lesson.lesson_prompt,
+                             style='green/black.TLabel')
 
-    label = ttk.Label(slide, text=lesson.lesson_prompt,
-                      style='green/black.TLabel')
-    label.pack()
+    label_prompt.pack(side="top")
+    menu_escape.pack(side="bottom")
     pass
