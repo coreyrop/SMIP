@@ -24,4 +24,9 @@ def draw_lesson(root, ttk, lesson):
     label = ttk.Label(slide, text=lesson.lesson_prompt,
                       style='green/black.TLabel')
     label.pack()
+
+    button1 = ttk.Button(slide, text='Hint', style='green/black.TButton',
+                         command=None)
+
+    button1.pack()
     pass
