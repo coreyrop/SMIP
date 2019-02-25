@@ -28,4 +28,10 @@ def draw_lesson(root, ttk, lesson):
 
     label_prompt.pack(side="top")
     menu_escape.pack(side="bottom")
+    label.pack()
+
+    button1 = ttk.Button(slide, text='Hint', style='green/black.TButton',
+                         command=None)
+
+    button1.pack()
     pass
