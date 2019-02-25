@@ -4,8 +4,7 @@ from gui.Utilities import transfer_to
 from gui.LessonPage import draw_lesson
 from lessons.Lesson import Lesson
 
-sample_lesson = Lesson('This is a basic lesson prompt', {})
-
+sample_lesson = Lesson('Lesson 1: Register Addition', {})
 
 """
 Draws the main menu to the frame
