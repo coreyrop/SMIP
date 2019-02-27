@@ -12,9 +12,17 @@ sample_instruction = (" Use the \'add\' instruction to add the values in\n regis
                         "\n Save the values in register R3.\n" " Remember that the add instruction is "
                         "of the form:\n \'instruction destination, source, source\'")
 
+#Function to store user code from text box to store it in a file
+def store_source_code(user_text):
+    out = open("user_input.txt", "w")
+    out.write(user_text)
+    out.close()
+    pass
 
 def feedback(user_input, label, button1, button2 ):
     label.configure(text=user_input.get())
+    textinp = user_input.get()                 #store text
+    store_source_code(textinp)            #send to write to the file
     user_input.pack_forget()
     button2.pack_forget()
     button1.pack_forget()
