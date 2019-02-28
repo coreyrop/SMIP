@@ -3,6 +3,7 @@ from tkinter import font
 from gui.Utilities import transfer_to
 from gui.LessonPage import draw_lesson
 from lessons.Lesson import Lesson
+from gui.ReferenceWindow import draw_reference
 
 sample_lesson = Lesson('Lesson 1: Register Addition', {})
 
@@ -11,7 +12,6 @@ Draws the main menu to the frame
 root: tkinter root to draw to 
 ttk: tkinter ttk used for styling
 """
-
 
 def draw_menu(root, ttk):
     # Set fonts for the menu widgets.
@@ -42,7 +42,7 @@ def draw_menu(root, ttk):
                          command=lambda: transfer_to(slide, lambda: draw_lesson(root, ttk, sample_lesson)))
     button2 = ttk.Button(slide, text='Select Lesson', style='green/black.TButton')
     button3 = ttk.Button(slide, text='Practice', style='green/black.TButton')
-    button4 = ttk.Button(slide, text='Reference', style='green/black.TButton')
+    button4 = ttk.Button(slide, text='Reference', style='green/black.TButton',command = lambda: draw_reference())
     button5 = ttk.Button(slide, text='Exit', style='green/black.TButton', command=quit)
 
     button1.pack(pady=30)
