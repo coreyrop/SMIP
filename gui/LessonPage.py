@@ -35,11 +35,11 @@ def sub(user_input,lesson_input):
     pass
 def get_text():
     f = open('Sample1.s', 'r')
-    out = ""
+    output = ""
     for x in f.readlines():
-        out += x
+        output += x
 
-    return out
+    return output
 
 
 def draw_lesson(root, ttk, lesson):
