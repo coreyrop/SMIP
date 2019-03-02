@@ -2,7 +2,12 @@ import os, sys, subprocess
 
 def draw_reference():
 
-    filename = 'MIPS_Green_Sheet.pdf'
+    dirname = os.path.dirname(__file__)
+
+    #Removing gui folder from the absolute path
+    dirname = dirname[:-3]
+    
+    filename = os.path.join(dirname,'References','MIPS_Green_Sheet.pdf')
 
     if sys.platform == "win32":
         os.startfile(filename)
