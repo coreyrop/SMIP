@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import font
+from lessons.Submission import run_MIPS
 """
 Draws a lesson to the frame
 root: tkinter root to draw to 
@@ -17,6 +18,8 @@ def store_source_code(user_text):
     out.write(user_text)
     out.close()
     pass
+
+
 def feedback(user_input, label, button1, button2 ):
     label.configure(text=user_input.get())
     textinp = user_input.get()                 #store text
@@ -30,17 +33,21 @@ def feedback(user_input, label, button1, button2 ):
     button2.pack(side="right", padx=10)
     pass
 
-def sub(user_input,lesson_input):
+
+def sub(user_input):
     f = open('input.s', 'w')
     f.write(user_input.get("1.0", tk.END))
     f.close()
+
+    update_registers(run_MIPS('input.s'))
     pass
+
 def get_text():
     f = open('Sample1.s', 'r')
     output = ""
     for x in f.readlines():
         output += x
-
+    f.close()
     return output
 
 
@@ -61,29 +68,25 @@ def draw_lesson(root, ttk, lesson):
     sidebar = tk.Frame(root, width=200, bg='white', height=500, relief='sunken', borderwidth=2)
     sidebar.pack(expand=False, fill='both', side='left', anchor='nw')
 
-    draw_sidebar(sidebar, ttk)
-
+    draw_sidebar(sidebar)
 
     # Pack lesson_header Frame over the top of the slide.
     lesson_header.pack(fill="x")
     slide.pack(expand=True, fill="both")
     slide2.pack(expand=True, fill="both")
     ribbon.pack(expand=True, fill="both", side="bottom")
-    label_prompt = ttk.Label(lesson_header, text=lesson.lesson_prompt, style='B_DO1.TLabel')
     label_instruction = ttk.Label(slide, text=sample_instruction, style='B_DO1.TLabel')
     menu_escape = ttk.Button(ribbon, text='Main Menu', style='B_DO1.TButton')
     hint_button = ttk.Button(slide2, text='Hint', style='B_DO1.TButton', command=None)
 
     # input_written is the output of their input.
     # lesson_input is their input.
-    input_written = ttk.Label(slide, text=' ', style='B_DO1.TLabel')
     lesson_input = ttk.Entry(master=slide, font=menuLabel_font)
     lesson_input = tk.Text(slide, height=30, width=100)
     quote = get_text()
     lesson_input.insert(tk.END, quote)
     submit_button = ttk.Button(master=slide2, text='Submit Code', style='B_DO1.TButton',
-                              command=lambda: sub(lesson_input,lesson_input))
-
+                              command=lambda: sub(lesson_input))
 
     label_instruction.pack(side="top", pady=5)
     lesson_input.pack(pady=20, padx=10)
@@ -92,17 +95,16 @@ def draw_lesson(root, ttk, lesson):
     hint_button.pack(side='left',padx=10)
     pass
 
-def draw_sidebar(sidebar, ttk):
+
+def draw_sidebar(sidebar):
     tk.Label(sidebar, text="NAME", width=SIDEBAR_COLUMN_WIDTH).grid(row=0, column=0)
     tk.Label(sidebar, text="NUM", width=SIDEBAR_COLUMN_WIDTH).grid(row=0, column=1)
     tk.Label(sidebar, text="VALUE", width=SIDEBAR_COLUMN_WIDTH).grid(row=0, column=2)
-    dict = {} # debugging purposes, this'll get deleted once we geet output from pyspim
 
     for i in range (32):
         label = tk.Label(sidebar, text="0", width="5")
         label.grid(row=i+1, column=2)
         registers.append(label) # global arr so labels can be updated
-        dict[i] = i * 2 # for debugging purposes, this will be the Lessons answer returned from pyspim
 
     tk.Label(sidebar, text="$zero", width=SIDEBAR_COLUMN_WIDTH).grid(row=1, column=0)
     tk.Label(sidebar, text="$at", width=SIDEBAR_COLUMN_WIDTH).grid(row=2, column=0)
@@ -136,13 +138,13 @@ def draw_sidebar(sidebar, ttk):
     tk.Label(sidebar, text="$sp", width=SIDEBAR_COLUMN_WIDTH).grid(row=30, column=0)
     tk.Label(sidebar, text="$fp", width=SIDEBAR_COLUMN_WIDTH).grid(row=31, column=0)
     tk.Label(sidebar, text="$ra", width=SIDEBAR_COLUMN_WIDTH).grid(row=32, column=0)
-    for i in range (32):
+    for i in range(32):
         tk.Label(sidebar, text=i, width=SIDEBAR_COLUMN_WIDTH).grid(row=i+1, column=1)
-    update_registers(sidebar, dict)
-def update_registers(sidebar, answers):
-    i = 0
-    for answer in answers:
-        res = answers[i]
-        registers[i].config(text=res)
-        i = i + 1
+
+
+def update_registers(answers):
+    for register, value in answers.items():
+        res = value
+        registers[register].config(text=res)
+
 
