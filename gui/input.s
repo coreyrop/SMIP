@@ -10,16 +10,13 @@
 	
 # The label 'main' represents the starting point
 main:
-	# Run the print_string syscall which has code 4
-	addi $v0, $0, 100
-	addi $s6, $0, 1000
+
+	# your code here
+	addi $t0, $0, 3
+	addi $t1, $0, 5
+	add $t4, $t0, $t1
+
 
 	# All memory structures are placed after the
 	# .data assembler directive
 	.data
-
-	# The .asciiz assembler directive creates
-	# an ASCII string in memory terminated by
-	# the null character. Note that strings are
-	# surrounded by double-quotes
-msg:	.asciiz	"Hello World!\n"
