@@ -1,0 +1,10 @@
+
+lessons/__pycache__/
+
+gui/__pycache__/
+
+\.idea/
+
+pyspim/\.DS_Store
+
+\.DS_Store
