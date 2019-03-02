@@ -95,7 +95,7 @@ def draw_lesson(root, ttk, lesson):
     quote = get_text()
     lesson_input.insert(tk.END, quote)
     submit_button = ttk.Button(master=slide2, text='Submit Code', style='B_DO1.TButton',
-                               cursor="target", command=lambda: sub(lesson_input, lesson_input))
+                               cursor="target", command=lambda: sub(lesson_input))
 
     label_instruction.pack(side="top", pady=5)
     lesson_input.pack(pady=20, padx=10)
