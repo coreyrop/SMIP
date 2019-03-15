@@ -1,9 +1,13 @@
+import os
 import tkinter as tk
 from tkinter import font
 from tkinter import messagebox
+from tkinter.filedialog import askopenfilename
+from lessons.Lesson_Transition import get_next_lesson, get_previous_lesson
 from gui.ReferenceWindow import draw_reference
-from gui.LessonPage import submit_code
+from gui.LessonPage import submit_code, get_text
 from gui.Utilities import transfer_to
+from lessons.Lesson_Workbook import initialize_workbook
 
 SIDEBAR_COLUMN_WIDTH = 5
 registers = []
@@ -36,16 +40,18 @@ def draw_menu(root, ttk, next_lesson):
 
     button1 = ttk.Button(main_frame, text='Start', style='green/black.TButton',
                          command=lambda: transfer_to(
-                             lambda: draw_lesson(root, ttk, next_lesson, submit_code, messagebox.showinfo), main_frame))
+                             lambda: draw_lesson(root, ttk, get_next_lesson(), submit_code, messagebox.showinfo), main_frame))
     button2 = ttk.Button(main_frame, text='Select Lesson', style='green/black.TButton')
     button3 = ttk.Button(main_frame, text='Practice', style='green/black.TButton')
     button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton', command=draw_reference)
+    create_lesson_button = ttk.Button(main_frame, text='Create Lesson', style='green/black.TButton', command=lambda: transfer_to(lambda: draw_create_lessons_form(root, ttk), main_frame))
     button5 = ttk.Button(main_frame, text='Exit', style='green/black.TButton', command=quit)
 
     button1.pack(pady=30)
     button2.pack(pady=30)
     button3.pack(pady=30)
     button4.pack(pady=30)
+    create_lesson_button.pack(pady=30)
     button5.pack(pady=30)
     pass
 
@@ -76,9 +82,8 @@ def draw_lesson(root, ttk, lesson, submit_function, hint_function):
     bottom_frame_bottom.pack(expand=True, fill="both", side="bottom")
 
     label_instruction = ttk.Label(center_frame, text=lesson.lesson_prompt, style='B_DO1.TLabel')
-    lesson_input = ttk.Entry(master=center_frame, font=menuLabel_font)
     lesson_input = tk.Text(center_frame, height=30, width=100)
-    lesson_input.insert(tk.END, lesson.code_base)
+    lesson_input.insert(tk.END, get_text(lesson.code_base))
 
     label_instruction.pack(side="top", pady=5)
     lesson_input.pack(pady=20, padx=10)
@@ -144,4 +149,65 @@ def draw_sidebar(sidebar, registers):
     tk.Label(sidebar, text="$ra", width=SIDEBAR_COLUMN_WIDTH).grid(row=32, column=0)
     for i in range(32):
         tk.Label(sidebar, text=i, width=SIDEBAR_COLUMN_WIDTH).grid(row=i + 1, column=1)
+    pass
+
+
+def draw_create_lessons_form(root, ttk):
+    main_frame = tk.Frame(root, bg='medium blue')
+    main_frame.pack()
+    register_fields = {i: {} for i in range(32)}
+
+    lesson_title_label = ttk.Label(main_frame, text='Lesson Title')
+    lesson_prompt_label = ttk.Label(main_frame, text='Lesson Prompt')
+    lesson_hint_label = ttk.Label(main_frame, text='Lesson Hint')
+    lesson_filepath_label = ttk.Label(main_frame, text='Relative File Path')
+
+    for i in register_fields.keys():
+        register_fields[i]['label'] = ttk.Label(main_frame, text='$r'+str(i))
+
+    lesson_title_label.grid(row=0, column=0)
+    lesson_prompt_label.grid(row=1, column=0)
+    lesson_hint_label.grid(row=2, column=0)
+    lesson_filepath_label.grid(row=3, column=0)
+    for i in register_fields.keys():
+        if i < 16:
+            register_fields[i]['label'].grid(row=i+4, column=0)
+        else:
+            register_fields[i]['label'].grid(row=i-16+4, column=2)
+
+    lesson_title_entry = ttk.Entry(main_frame)
+    lesson_prompt_entry = ttk.Entry(main_frame)
+    lesson_hint_entry = ttk.Entry(main_frame)
+    lesson_filepath_current_label = ttk.Label(main_frame, text='None Set')
+    for i in register_fields.keys():
+        register_fields[i]['entry'] = ttk.Entry(main_frame)
+
+    lesson_title_entry.grid(row=0, column=1)
+    lesson_prompt_entry.grid(row=1, column=1)
+    lesson_hint_entry.grid(row=2, column=1)
+    lesson_filepath_current_label.grid(row=3, column=1)
+    for i in register_fields.keys():
+        if i < 16:
+            register_fields[i]['entry'].grid(row=i+4, column=1)
+        else:
+            register_fields[i]['entry'].grid(row=i-16+4, column=3)
+
+    lesson_filepath_button = ttk.Button(main_frame, text='Select', cursor='target', command=lambda: lesson_filepath_current_label.config(text='../'+os.path.relpath(askopenfilename(), '../')))
+    lesson_filepath_button.grid(row=3, column=2)
+
+    main_menu_button = ttk.Button(main_frame, text='Main Menu', cursor='target',
+                                  command=lambda: transfer_to(lambda: draw_menu(root, ttk, None), main_frame))
+    submit_lesson_button = ttk.Button(main_frame, text='Create Lesson', cursor='target',
+                                      command=lambda: initialize_workbook('../lesson_files/'+lesson_title_entry.get(),
+                                                                          lesson_title=lesson_title_entry.get(),
+                                                                          lesson_prompt=lesson_prompt_entry.get(),
+                                                                          lesson_hint=lesson_hint_entry.get(),
+                                                                          lesson_filepath=lesson_filepath_current_label
+                                                                          ['text'],
+                                                                          registers={
+                                                                          j: register_fields[j]['entry'].get() for j in
+                                                                          register_fields.keys()}))
+
+    main_menu_button.grid(row=21, column=0)
+    submit_lesson_button.grid(row=21, column=1)
     pass
