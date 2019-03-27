@@ -13,7 +13,8 @@ if __name__ == '__main__':
     their_width = root.winfo_screenwidth()
     their_height = root.winfo_screenheight()
     root.maxsize(their_width, their_height)
-    root.minsize(700, 800)
+    # Buttons need room, so we need max height.
+    root.minsize(700, their_height)
     # Put app at the center of the screen.
     x = (their_width / 2) - (700 / 2)
     y = (their_height / 2) - (800 / 2)
