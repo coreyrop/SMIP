@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import font
 from tkinter import messagebox
+from tkinter import *
 from gui.ReferenceWindow import draw_reference
 from gui.LessonPage import submit_code
 from gui.Utilities import transfer_to
@@ -39,7 +40,7 @@ def draw_menu(root, ttk, next_lesson):
                              lambda: draw_lesson(root, ttk, next_lesson, submit_code, messagebox.showinfo), main_frame))
     button2 = ttk.Button(main_frame, text='Select Lesson', style='green/black.TButton')
     button3 = ttk.Button(main_frame, text='Practice', style='green/black.TButton')
-    button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton', command=draw_reference)
+    button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton', command=lambda:draw_reference("local_file", "MIPS_Green_Sheet.pdf"))
     button5 = ttk.Button(main_frame, text='Exit', style='green/black.TButton', command=quit)
 
     button1.pack(pady=30)
@@ -89,7 +90,21 @@ def draw_lesson(root, ttk, lesson, submit_function, hint_function):
     hint_button = ttk.Button(bottom_frame_bottom, text='Hint', style='B_DO1.TButton',
                              cursor="target", command=lambda: hint_function("Hint", lesson.lesson_hint))
     reference_button = ttk.Button(bottom_frame_bottom, text='Reference', style='B_DO1.TButton',
-                                  cursor="target", command=draw_reference)
+                                  cursor="target")#, command=draw_reference)
+
+    popup = Menu(root, tearoff=0, bg = '#f27446', font = 20)
+    # for reference in lesson.lesson_reference:
+    #      popup.add_command(label=reference['Name'], command=lambda: draw_reference(reference['Type'],reference['Path']))
+    #      print(reference)
+    popup.add_command(label="Green Sheet", command=lambda:draw_reference('local_file', 'MIPS_Green_Sheet.pdf'))
+    popup.add_command(label="Test Link", command=lambda:draw_reference('web_link', 'https://en.wikipedia.org/wiki/MIPS_architecture') )
+
+    def do_popup(event):
+        # display the popup menu
+        popup.tk_popup(event.x_root, event.y_root, 0)
+
+    reference_button.bind("<ButtonRelease-1>", do_popup)
+
     submit_button = ttk.Button(bottom_frame_top, text='Submit Code', style='B_DO1.TButton',
                                cursor="target", command=lambda: submit_function(lesson_input, registers, lesson))
 

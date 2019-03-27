@@ -1,13 +1,18 @@
-import os, sys, subprocess
+import os, sys, subprocess, webbrowser, enum
 
-def draw_reference():
+
+class Reference(enum.Enum):
+    web_link = 0
+    local_file = 1
+
+def draw_reference_path(file_path):
 
     dirname = os.path.dirname(__file__)
 
     #Removing gui folder from the absolute path
     dirname = dirname[:-3]
     
-    filename = os.path.join(dirname,'References','MIPS_Green_Sheet.pdf')
+    filename = os.path.join(dirname,'References', file_path)
 
     if sys.platform == "win32":
         os.startfile(filename)
@@ -16,3 +21,16 @@ def draw_reference():
         subprocess.call([opener, filename])
 
     pass
+
+def draw_reference_link(file_link):
+    webbrowser.open(file_link)
+
+
+def draw_reference(type, path):
+    print(type)
+    print(path)
+    if Reference[type].value == Reference.local_file.value:
+        draw_reference_path(file_path = path)
+    elif Reference[type].value == Reference.web_link.value:
+        draw_reference_link(file_link = path)
+
