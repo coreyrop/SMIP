@@ -1,3 +1,5 @@
+from os.path import relpath
+from tkinter.filedialog import askopenfilename
 """
 Destroys all content inside of the given frame
 frame: frame who's content will be destroyed
@@ -9,6 +11,13 @@ def destroy_content(frame):
         widget.destroy()
     pass
 
+
+def get_relative_file_path(filetypes):
+    try:
+        s = askopenfilename(filetypes=filetypes)
+        return '../' + relpath(s, '../')
+    except ValueError:
+        return 'None Set'
 
 
 """

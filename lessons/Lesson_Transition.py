@@ -21,3 +21,8 @@ def get_previous_lesson():
         return lessons[lesson_index]
     else:
         return lessons[lesson_index]
+
+
+def append_new_lesson(new_lesson):
+    lessons.append(new_lesson)
+    pass

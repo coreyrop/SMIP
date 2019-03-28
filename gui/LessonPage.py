@@ -9,7 +9,7 @@ lesson: the lesson to be drawn to the screen
 
 
 def submit_code(user_input, register_labels, lesson):
-    filename = '../lesson_files/Submissions/'+lesson.lesson_title + '(Submission)'
+    filename = '../lesson_files/Submissions/'+lesson.lesson_title + '(Submission).s'
     f = open(filename, 'w')
     f.write(user_input.get("1.0", tk.END))
     f.close()
