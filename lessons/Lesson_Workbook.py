@@ -1,4 +1,5 @@
 from openpyxl import Workbook, load_workbook
+from openpyxl.styles import PatternFill, Font
 from .Lesson import Lesson
 import re
 import os
@@ -27,6 +28,11 @@ def initialize_workbook(filename='temp', **kwargs):
     sheet.column_dimensions['H'].width = 50
     sheet.column_dimensions['I'].width = 50
 
+    greenFill = PatternFill(start_color='00FF00', end_color='00FF00', fill_type='solid')
+    cyanFill = PatternFill(start_color='00FFFF', end_color='00FFFF', fill_type='solid')
+    labelFont = Font(name='Calibri', size=14, bold=True)
+    valueFont = Font(name='Calibri', size=14)
+
     sheet['A1'] = 'Lesson Title'
     sheet['A2'] = 'Lesson Prompt'
     sheet['A3'] = 'Lesson Hint'
@@ -36,19 +42,58 @@ def initialize_workbook(filename='temp', **kwargs):
     sheet['B3'] = kwargs['lesson_hint']
     sheet['B4'] = kwargs['lesson_filepath']
 
+    sheet['A1'].fill = greenFill
+    sheet['A2'].fill = greenFill
+    sheet['A3'].fill = greenFill
+    sheet['A4'].fill = greenFill
+    sheet['A1'].font = labelFont
+    sheet['A2'].font = labelFont
+    sheet['A3'].font = labelFont
+    sheet['A4'].font = labelFont
+
+    sheet['B1'].fill = cyanFill
+    sheet['B2'].fill = cyanFill
+    sheet['B3'].fill = cyanFill
+    sheet['B4'].fill = cyanFill
+    sheet['B1'].font = valueFont
+    sheet['B2'].font = valueFont
+    sheet['B3'].font = valueFont
+    sheet['B4'].font = valueFont
+
     for i in range(32):
         sheet[get_register_index(i, False)] = '$r'+str(i)
+        sheet[get_register_index(i, False)].fill = greenFill
+        sheet[get_register_index(i, False)].font = labelFont
+
         sheet[get_register_index(i)] = kwargs['registers'][i]
+        sheet[get_register_index(i)].fill = cyanFill
+        sheet[get_register_index(i)].font = valueFont
 
     sheet['G1'] = 'Reference Name'
     sheet['H1'] = 'Reference Type'
     sheet['I1'] = 'Reference Path'
+
+    sheet['G1'].fill = greenFill
+    sheet['H1'].fill = greenFill
+    sheet['I1'].fill = greenFill
+    sheet['G1'].font = labelFont
+    sheet['H1'].font = labelFont
+    sheet['I1'].font = labelFont
 
     index = 2
     for reference in kwargs.get('references', []):
         sheet['G'+str(index)] = reference['Name']
         sheet['H'+str(index)] = reference['Type']
         sheet['I'+str(index)] = reference['Path']
+        if reference['Type'] == 'web_link':
+            sheet['I'+str(index)].style = 'Hyperlink'
+
+        sheet['G' + str(index)].fill = cyanFill
+        sheet['H' + str(index)].fill = cyanFill
+        sheet['I' + str(index)].fill = cyanFill
+        sheet['G' + str(index)].font = valueFont
+        sheet['H' + str(index)].font = valueFont
+        sheet['I' + str(index)].font = valueFont
         index += 1
 
     book.save(filename+'.xlsx')
