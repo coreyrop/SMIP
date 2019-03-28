@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import font, messagebox, Menu
+from tkinter import font, messagebox, Menu, Message
 from lessons.Lesson_Transition import get_next_lesson, get_previous_lesson, append_new_lesson
 from gui.ReferenceWindow import draw_reference
 from gui.LessonPage import submit_code, get_text
@@ -237,16 +237,33 @@ def draw_create_lessons_form(root, ttk):
 
     main_menu_button = ttk.Button(main_frame, text='Main Menu', cursor='target', style='menu_buttons.TButton',
                                   command=lambda: transfer_to(lambda: draw_menu(root, ttk, None), main_frame))
+
+    def submit_confirmation():
+        append_new_lesson(initialize_workbook('../lesson_files/' + lesson_title_entry.get(),
+                                              lesson_title=lesson_title_entry.get(),
+                                              lesson_prompt=lesson_prompt_entry.get(),
+                                              lesson_hint=lesson_hint_entry.get(),
+                                              lesson_filepath=lesson_filepath_current_label
+                                              ['text'],
+                                              registers={
+                                                  j: register_fields[j]['entry'].get() for j in
+                                                  register_fields.keys()}, references=references))
+
+        lesson_title_entry.delete(0, 'end')
+        lesson_prompt_entry.delete(0, 'end')
+        lesson_hint_entry.delete(0, 'end')
+        lesson_filepath_current_label.config(text='None Set')
+
+        included_references.clear()
+        reference_menu['menu'].delete(0, 'end')
+        reference_menu['menu'].add_command(label='None', command=lambda : str_var.set('None'))
+
+        for i in register_fields.keys():
+            register_fields[i]['entry'].delete(0, 'end')
+        pass
+
     submit_lesson_button = ttk.Button(main_frame, text='Create Lesson', cursor='target', style='menu_buttons.TButton',
-                                      command=lambda: append_new_lesson(initialize_workbook('../lesson_files/'+lesson_title_entry.get(),
-                                                                          lesson_title=lesson_title_entry.get(),
-                                                                          lesson_prompt=lesson_prompt_entry.get(),
-                                                                          lesson_hint=lesson_hint_entry.get(),
-                                                                          lesson_filepath=lesson_filepath_current_label
-                                                                          ['text'],
-                                                                          registers={
-                                                                          j: register_fields[j]['entry'].get() for j in
-                                                                          register_fields.keys()}, references=references)))
+                                      command=submit_confirmation)
 
     def submit_ref(ref, dict, win):
         ref.append(dict)
