@@ -5,6 +5,7 @@ from gui.ReferenceWindow import draw_reference
 from gui.LessonPage import submit_code, get_text
 from gui.Utilities import transfer_to, get_relative_file_path
 from lessons.Lesson_Workbook import initialize_workbook
+from time import sleep
 
 SIDEBAR_COLUMN_WIDTH = 5
 registers = []
@@ -260,9 +261,24 @@ def draw_create_lessons_form(root, ttk):
 
         for i in register_fields.keys():
             register_fields[i]['entry'].delete(0, 'end')
+
+        # Make a lesson created user alert here, then grid forget.
+        # NOTICE: It is forgotten, NOT destroyed.
+        alert = tk.Label(main_frame, background='green2', text='Lesson Created!', font=menuButton_font)
+        alert.grid(row=40, column=1)
+        # Root must be updated for changes to be displayed.
+        root.update()
+        # Modest sleep time of about 3 seconds, for user to take notice.
+        sleep(3)
+        alert.grid_forget()
+
         pass
 
-    submit_lesson_button = ttk.Button(main_frame, text='Create Lesson', cursor='target', style='menu_buttons.TButton',
+    # This part is just to make the button string more accessible.
+    # It might be deleted later.
+    create_lesson_str = tk.StringVar()
+    create_lesson_str.set('Create Lesson')
+    submit_lesson_button = ttk.Button(main_frame, text=create_lesson_str.get(), cursor='target', style='menu_buttons.TButton',
                                       command=submit_confirmation)
 
     def submit_ref(ref, dict, win):
@@ -322,6 +338,6 @@ def draw_create_lessons_form(root, ttk):
     reference_menu_button.bind("<ButtonRelease-1>", lambda event: popup.tk_popup(event.x_root, event.y_root, 0))
 
     reference_menu_button.grid(row=2, column=2, padx=10)
-    main_menu_button.grid(row=40, column=0, sticky='s')
-    submit_lesson_button.grid(row=40, column=1, sticky='s')
+    main_menu_button.grid(row=40, column=0, sticky='s', pady=15)
+    submit_lesson_button.grid(row=40, column=1, sticky='s', pady=15)
     pass
