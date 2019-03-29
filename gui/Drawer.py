@@ -1,11 +1,11 @@
 import tkinter as tk
-from tkinter import font, messagebox, Menu, Message
-from lessons.Lesson_Transition import get_next_lesson, get_previous_lesson, append_new_lesson
+from tkinter import font, messagebox, Menu
+from lessons.Lesson_Transition import get_next_lesson, append_new_lesson
 from gui.ReferenceWindow import draw_reference
 from gui.LessonPage import submit_code, get_text
 from gui.Utilities import transfer_to, get_relative_file_path
 from lessons.Lesson_Workbook import initialize_workbook
-from time import sleep
+import re
 
 SIDEBAR_COLUMN_WIDTH = 5
 registers = []
@@ -41,11 +41,14 @@ def draw_menu(root, ttk, next_lesson):
 
     button1 = ttk.Button(main_frame, text='Start', style='green/black.TButton',
                          command=lambda: transfer_to(
-                             lambda: draw_lesson(root, ttk, get_next_lesson(), submit_code, messagebox.showinfo), main_frame))
+                             lambda: draw_lesson(root, ttk, get_next_lesson(), submit_code, messagebox.showinfo),
+                             main_frame))
     button2 = ttk.Button(main_frame, text='Select Lesson', style='green/black.TButton')
     button3 = ttk.Button(main_frame, text='Practice', style='green/black.TButton')
     button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton', command=draw_reference)
-    create_lesson_button = ttk.Button(main_frame, text='Create Lesson', style='green/black.TButton', command=lambda: transfer_to(lambda: draw_create_lessons_form(root, ttk), main_frame))
+    create_lesson_button = ttk.Button(main_frame, text='Create Lesson', style='green/black.TButton',
+                                      command=lambda: transfer_to(lambda: draw_create_lessons_form(root, ttk),
+                                                                  main_frame))
     button5 = ttk.Button(main_frame, text='Exit', style='green/black.TButton', command=quit)
 
     button1.pack(pady=30)
@@ -169,7 +172,8 @@ def draw_create_lessons_form(root, ttk):
     # Apply style settings.
     ttk.Style().configure('B_DO1.TLabel', foreground='black', background='DarkOrange1', width=20,
                           font=create_field_font, anchor="CENTER")
-    ttk.Style().configure('B_DO1.TButton', foreground='black', background='DarkOrange1', font=create_button_font, width=15)
+    ttk.Style().configure('B_DO1.TButton', foreground='black', background='DarkOrange1', font=create_button_font,
+                          width=15)
     ttk.Style().configure('menu_buttons.TButton', foreground='black', background='DarkOrange1', font=menuButton_font,
                           width=15, padx=5)
     ttk.Style().configure('references.TLabel', foreground='black', background='DarkOrange1', width=12,
@@ -194,7 +198,7 @@ def draw_create_lessons_form(root, ttk):
     reference_menu_label = ttk.Label(main_frame, text='References', style='references.TLabel')
 
     for i in register_fields.keys():
-        register_fields[i]['label'] = ttk.Label(main_frame, text='$r'+str(i)+' ', font=register_label_font)
+        register_fields[i]['label'] = ttk.Label(main_frame, text='$r' + str(i) + ' ', font=register_label_font)
 
     lesson_title_label.grid(row=0, column=0, pady=10, padx=20)
     lesson_prompt_label.grid(row=1, column=0, pady=10)
@@ -208,11 +212,11 @@ def draw_create_lessons_form(root, ttk):
             if i > 9:
                 new_text = register_fields[i]['label'].cget("text")
                 register_fields[i]['label'] = ttk.Label(main_frame, text=new_text[:4], font=register_label_font)
-            register_fields[i]['label'].grid(row=i+4, column=1, sticky='w', padx=10)
+            register_fields[i]['label'].grid(row=i + 4, column=1, sticky='w', padx=10)
         else:
             new_text = register_fields[i]['label'].cget("text")
             register_fields[i]['label'] = ttk.Label(main_frame, text=new_text[:4], font=register_label_font)
-            register_fields[i]['label'].grid(row=i-16+4, column=1, stick='e', padx=3)
+            register_fields[i]['label'].grid(row=i - 16 + 4, column=1, stick='e', padx=3)
 
     lesson_title_entry = ttk.Entry(main_frame, font=create_button_font)
     lesson_prompt_entry = ttk.Entry(main_frame, font=create_button_font)
@@ -228,63 +232,72 @@ def draw_create_lessons_form(root, ttk):
     lesson_filepath_current_label.grid(row=3, column=1)
     for i in register_fields.keys():
         if i < 16:
-            register_fields[i]['entry'].grid(row=i+4, column=0, sticky='e', padx=3)
+            register_fields[i]['entry'].grid(row=i + 4, column=0, sticky='e', padx=3)
         else:
-            register_fields[i]['entry'].grid(row=i-16+4, column=2, padx=3)
+            register_fields[i]['entry'].grid(row=i - 16 + 4, column=2, padx=3)
 
     lesson_filepath_button = ttk.Button(main_frame, text='Select', cursor='target', style='B_DO1.TButton',
-                                        command=lambda: lesson_filepath_current_label.config(text=get_relative_file_path([('MIPS code files', '*.s')])))
+                                        command=lambda: lesson_filepath_current_label.config(
+                                            text=get_relative_file_path([('MIPS code files', '*.s')])))
     lesson_filepath_button.grid(row=3, column=2)
 
     main_menu_button = ttk.Button(main_frame, text='Main Menu', cursor='target', style='menu_buttons.TButton',
                                   command=lambda: transfer_to(lambda: draw_menu(root, ttk, None), main_frame))
 
     def submit_confirmation():
-        append_new_lesson(initialize_workbook('../lesson_files/' + lesson_title_entry.get(),
-                                              lesson_title=lesson_title_entry.get(),
-                                              lesson_prompt=lesson_prompt_entry.get(),
-                                              lesson_hint=lesson_hint_entry.get(),
-                                              lesson_filepath=lesson_filepath_current_label
-                                              ['text'],
-                                              registers={
-                                                  j: register_fields[j]['entry'].get() for j in
-                                                  register_fields.keys()}, references=references))
+        if bool(lesson_title_entry.get() and not lesson_title_entry.get().isspace()) and bool(
+                lesson_prompt_entry.get() and not lesson_prompt_entry.get().isspace()) and bool(
+                lesson_hint_entry.get() and not lesson_hint_entry.get().isspace()) and all(
+                [re.match('[+-]?\d', register_fields[i]['entry'].get()) is not None for i in register_fields.keys() if
+                 not register_fields[i]['entry'].get().isspace() and register_fields[i]['entry'].get()]):
 
-        lesson_title_entry.delete(0, 'end')
-        lesson_prompt_entry.delete(0, 'end')
-        lesson_hint_entry.delete(0, 'end')
-        lesson_filepath_current_label.config(text='None Set')
+            append_new_lesson(initialize_workbook('../lesson_files/' + lesson_title_entry.get(),
+                                                  lesson_title=lesson_title_entry.get(),
+                                                  lesson_prompt=lesson_prompt_entry.get(),
+                                                  lesson_hint=lesson_hint_entry.get(),
+                                                  lesson_filepath=lesson_filepath_current_label
+                                                  ['text'],
+                                                  registers={
+                                                      j: register_fields[j]['entry'].get() for j in
+                                                      register_fields.keys()}, references=references))
 
-        included_references.clear()
-        reference_menu['menu'].delete(0, 'end')
-        reference_menu['menu'].add_command(label='None', command=lambda : str_var.set('None'))
+            lesson_title_entry.delete(0, 'end')
+            lesson_prompt_entry.delete(0, 'end')
+            lesson_hint_entry.delete(0, 'end')
+            lesson_filepath_current_label.config(text='None Set')
 
-        for i in register_fields.keys():
-            register_fields[i]['entry'].delete(0, 'end')
+            included_references.clear()
+            reference_menu['menu'].delete(0, 'end')
+            reference_menu['menu'].add_command(label='None', command=lambda: str_var.set('None'))
 
-        # Make a lesson created user alert here, then grid forget.
-        # NOTICE: It is forgotten, NOT destroyed.
-        alert = tk.Label(main_frame, background='green2', text='Lesson Created!', font=menuButton_font)
+            for i in register_fields.keys():
+                register_fields[i]['entry'].delete(0, 'end')
+
+            # Make a lesson created user alert here, then grid forget.
+            # NOTICE: It is forgotten, NOT destroyed.
+            alert = tk.Label(main_frame, background='green2', text='Lesson Created!', font=menuButton_font)
+        else:
+            alert = tk.Label(main_frame, background='red2', text='Invalid Values', font=menuButton_font)
+
         alert.grid(row=40, column=1)
         # Root must be updated for changes to be displayed.
         root.update()
         # Modest sleep time of about 3 seconds, for user to take notice.
-        sleep(3)
-        alert.grid_forget()
-
+        alert.after(500, alert.grid_forget)
         pass
 
     # This part is just to make the button string more accessible.
     # It might be deleted later.
     create_lesson_str = tk.StringVar()
     create_lesson_str.set('Create Lesson')
-    submit_lesson_button = ttk.Button(main_frame, text=create_lesson_str.get(), cursor='target', style='menu_buttons.TButton',
+    submit_lesson_button = ttk.Button(main_frame, text=create_lesson_str.get(), cursor='target',
+                                      style='menu_buttons.TButton',
                                       command=submit_confirmation)
 
     def submit_ref(ref, dict, win):
         ref.append(dict)
         included_references.append(dict['Name'])
-        reference_menu['menu'].add_command(label = dict['Name'], command=lambda value=dict['Name']: str_var.set(value))
+        reference_menu['menu'].add_command(label=dict['Name'], command=lambda value=dict['Name']: str_var.set(value))
         win.destroy()
         pass
 
@@ -300,11 +313,16 @@ def draw_create_lessons_form(root, ttk):
         name_entry.grid(row=0, column=1)
 
         current_path_label = tk.Label(win, text='None Set', font=create_field_font)
-        select_file_button = ttk.Button(win, text="Select PDF", command=lambda: current_path_label.config(text=get_relative_file_path([('PDF files','*.pdf')])))
+        select_file_button = ttk.Button(win, text="Select PDF", command=lambda: current_path_label.config(
+            text=get_relative_file_path([('PDF files', '*.pdf')])))
         select_file_button.grid(row=1, column=0)
         current_path_label.grid(row=1, column=1)
 
-        submit_button = tk.Button(win, text='Add Reference', command=lambda: submit_ref(references, {'Name': name_entry.get(), 'Type': 'local_file', 'Path': current_path_label['text']}, win))
+        submit_button = tk.Button(win, text='Add Reference', command=lambda: submit_ref(references,
+                                                                                        {'Name': name_entry.get(),
+                                                                                         'Type': 'local_file',
+                                                                                         'Path': current_path_label[
+                                                                                             'text']}, win))
         submit_button.grid(row=2, column=0)
         pass
 
@@ -325,16 +343,18 @@ def draw_create_lessons_form(root, ttk):
         url_entry.grid(row=1, column=1)
 
         submit_button = tk.Button(win, text='Add Reference',
-                      command=lambda: submit_ref(references, {'Name': name_entry.get(), 'Type': 'web_link', 'Path': url_entry.get()},
-                                                 win))
+                                  command=lambda: submit_ref(references, {'Name': name_entry.get(), 'Type': 'web_link',
+                                                                          'Path': url_entry.get()},
+                                                             win))
         submit_button.grid(row=2, column=0)
         pass
 
     popup = Menu(root, tearoff=0, bg='#f27446', font=20)
     popup.add_command(label='PDF', command=lambda: add_pdf_reference_form(references))
-    popup.add_command(label='Link', command=lambda : add_link_reference_form(references))
+    popup.add_command(label='Link', command=lambda: add_link_reference_form(references))
 
-    reference_menu_button = ttk.Button(main_frame, text='Add a Reference', cursor='target', style='menu_buttons.TButton')
+    reference_menu_button = ttk.Button(main_frame, text='Add a Reference', cursor='target',
+                                       style='menu_buttons.TButton')
     reference_menu_button.bind("<ButtonRelease-1>", lambda event: popup.tk_popup(event.x_root, event.y_root, 0))
 
     reference_menu_button.grid(row=2, column=2, padx=10)
