@@ -6,7 +6,7 @@ from gui.LessonPage import submit_code, get_text
 from gui.Utilities import transfer_to, get_relative_file_path
 from lessons.Lesson_Workbook import initialize_workbook
 import re
-
+from lessons.Lesson_Transition import lessons
 SIDEBAR_COLUMN_WIDTH = 5
 registers = []
 
@@ -43,7 +43,10 @@ def draw_menu(root, ttk, next_lesson):
                          command=lambda: transfer_to(
                              lambda: draw_lesson(root, ttk, get_next_lesson(), submit_code, messagebox.showinfo),
                              main_frame))
-    button2 = ttk.Button(main_frame, text='Select Lesson', style='green/black.TButton')
+
+    button2 = ttk.Button(main_frame, text='Select Lesson', style='green/black.TButton',
+                         command=lambda: transfer_to(lambda: draw_lesson_select(root, ttk), main_frame))
+
     button3 = ttk.Button(main_frame, text='Practice', style='green/black.TButton')
     button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton', command=draw_reference)
     create_lesson_button = ttk.Button(main_frame, text='Create Lesson', style='green/black.TButton',
@@ -115,7 +118,7 @@ def draw_sidebar(sidebar, registers):
     tk.Label(sidebar, text="VALUE", width=SIDEBAR_COLUMN_WIDTH).grid(row=0, column=2)
 
     for i in range(32):
-        label = tk.Label(sidebar, text="0", width="5")
+        label = tk.Label(sidebar, text="undef", width="5")
         label.grid(row=i + 1, column=2)
         registers.append(label)  # global arr so labels can be updated
 
@@ -361,3 +364,72 @@ def draw_create_lessons_form(root, ttk):
     main_menu_button.grid(row=40, column=0, sticky='s', pady=15)
     submit_lesson_button.grid(row=40, column=1, sticky='s', pady=15)
     pass
+
+def draw_lesson_select(root, ttk):
+    main_frame = tk.Frame(root, bg='medium blue', width=root.winfo_width(), height=root.winfo_height())
+    main_frame.pack(expand=True, fill="both")
+    button_list = []
+
+    scframe = VerticalScrolledFrame(main_frame)
+    scframe.pack()
+
+    for i in range(len(lessons)):
+        btn = tk.Button(scframe.interior, height=1, width=20, relief=tk.FLAT,
+            bg="gray99", fg="purple3",
+            font="Dosis", text=lessons[i].lesson_title, command=lambda: transfer_to(
+                             lambda: draw_lesson(root, ttk, lessons[i], submit_code, messagebox.showinfo), main_frame))
+        print(i)
+        print(lessons[i].lesson_prompt)
+        button_list.append(btn)
+
+        btn.pack(padx=10, pady=5, side=tk.TOP)
+
+    #main_frame.pack()
+    pass
+
+#tkinter hates scrollbars with buttons so I grabbed this solution from stackoverflow
+#https://stackoverflow.com/questions/31762698/dynamic-button-with-scrollbar-in-tkinter-python
+class VerticalScrolledFrame(tk.Frame):
+    """A pure Tkinter scrollable frame that actually works!
+
+    * Use the 'interior' attribute to place widgets inside the scrollable frame
+    * Construct and pack/place/grid normally
+    * This frame only allows vertical scrolling
+    """
+    def __init__(self, parent, *args, **kw):
+        tk.Frame.__init__(self, parent, *args, **kw)
+
+        # create a canvas object and a vertical scrollbar for scrolling it
+        vscrollbar = tk.Scrollbar(self, orient=tk.VERTICAL)
+        vscrollbar.pack(fill=tk.Y, side=tk.RIGHT, expand=tk.FALSE)
+        canvas = tk.Canvas(self, bd=0, highlightthickness=0,
+                        yscrollcommand=vscrollbar.set)
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE)
+        vscrollbar.config(command=canvas.yview)
+
+        # reset the view
+        canvas.xview_moveto(0)
+        canvas.yview_moveto(0)
+
+        # create a frame inside the canvas which will be scrolled with it
+        self.interior = interior = tk.Frame(canvas)
+        interior_id = canvas.create_window(0, 0, window=interior,
+                                           anchor=tk.NW)
+
+        # track changes to the canvas and frame width and sync them,
+        # also updating the scrollbar
+        def _configure_interior(event):
+            # update the scrollbars to match the size of the inner frame
+            size = (interior.winfo_reqwidth(), interior.winfo_reqheight())
+            canvas.config(scrollregion="0 0 %s %s" % size)
+            if interior.winfo_reqwidth() != canvas.winfo_width():
+                # update the canvas's width to fit the inner frame
+                canvas.config(width=interior.winfo_reqwidth())
+
+        interior.bind('<Configure>', _configure_interior)
+
+        def _configure_canvas(event):
+            if interior.winfo_reqwidth() != canvas.winfo_width():
+                # update the inner frame's width to fill the canvas
+                canvas.itemconfigure(interior_id, width=canvas.winfo_width())
+        canvas.bind('<Configure>', _configure_canvas)
