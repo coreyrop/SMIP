@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import font, messagebox, Menu
 from lessons.Lesson_Transition import get_next_lesson, append_new_lesson
 from gui.ReferenceWindow import draw_reference
-from gui.LessonPage import submit_code, get_text
+from gui.LessonPage import submit_code, get_text ,run_practice
 from gui.Utilities import transfer_to, get_relative_file_path
 from lessons.Lesson_Workbook import initialize_workbook
 import re
@@ -35,7 +35,7 @@ def draw_menu(root, ttk, next_lesson):
                              style='green/black.TLabel', width=700, anchor="center")
     label_plug = ttk.Label(main_frame, style='textBox.TLabel', text=' Our repo: https://github.com/coreyrop/SMIP\n\t'
                                                                     '-Last Updated: 03/26/2019-')
-    abc =""
+
     label_banner.pack(pady=10)
     label_plug.pack(side="bottom", pady=5)
 
@@ -45,7 +45,7 @@ def draw_menu(root, ttk, next_lesson):
                              main_frame))
     button2 = ttk.Button(main_frame, text='Select Lesson', style='green/black.TButton')
     button3 = ttk.Button(main_frame, text='Practice', style='green/black.TButton', command=lambda: transfer_to(
-        lambda: draw_practice(root, ttk,abc), main_frame))
+        lambda: draw_practice(root, ttk, run_practice), main_frame))
     button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton', command=draw_reference)
     create_lesson_button = ttk.Button(main_frame, text='Create Lesson', style='green/black.TButton',
                                       command=lambda: transfer_to(lambda: draw_create_lessons_form(root, ttk),
@@ -363,7 +363,8 @@ def draw_create_lessons_form(root, ttk):
     submit_lesson_button.grid(row=40, column=1, sticky='s', pady=15)
     pass
 
-def draw_practice(root, ttk, lesson):
+
+def draw_practice(root, ttk , practice):
     # Set fonts for the menu widgets.
     # print(font.families()) to print available font families.
 
@@ -395,19 +396,18 @@ def draw_practice(root, ttk, lesson):
 
     label_instruction.pack(side="top", pady=5)
     lesson_input.pack(pady=20, padx=10)
+    lesson = ""
 
     menu_escape = ttk.Button(bottom_frame_top, text='Main Menu', style='B_DO1.TButton', cursor="target",
-                             command=lambda: transfer_to(lambda: draw_menu(root, ttk, lesson), center_frame,
+                             command=lambda: transfer_to(lambda: draw_menu(root, ttk,lesson), center_frame,
                                                          bottom_frame_top, bottom_frame_bottom, register_frame))
-    hint_button = ttk.Button(bottom_frame_bottom, text='Hint', style='B_DO1.TButton',
-                             cursor="target", command=lambda: hint_function("Hint", lesson.lesson_hint))
+
     reference_button = ttk.Button(bottom_frame_bottom, text='Reference', style='B_DO1.TButton',
                                   cursor="target", command=draw_reference)
     run_button = ttk.Button(bottom_frame_top, text='Run Code', style='B_DO1.TButton',
-                               cursor="target")
+                               cursor="target", command=lambda: practice(lesson_input, registers))
 
     menu_escape.pack(side='left', padx=10)
     run_button.pack(side='right', padx=10)
-    hint_button.pack(side='left', padx=10)
     reference_button.pack(side='right', padx=10)
     pass
