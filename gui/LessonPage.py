@@ -33,7 +33,6 @@ def run_practice(user_input, register_labels):
     results = run_MIPS(filename)
     update_registers(results, register_labels)
     print(" SMIP RUNS YOUR  CODE ")
-    print(results)
     pass
 
 

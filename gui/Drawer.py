@@ -45,7 +45,7 @@ def draw_menu(root, ttk, next_lesson):
                              main_frame))
     button2 = ttk.Button(main_frame, text='Select Lesson', style='green/black.TButton')
     button3 = ttk.Button(main_frame, text='Practice', style='green/black.TButton', command=lambda: transfer_to(
-        lambda: draw_practice(root, ttk, run_practice), main_frame))
+        lambda: draw_practice(root, ttk, run_practice,main_frame), main_frame))
     button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton', command=draw_reference)
     create_lesson_button = ttk.Button(main_frame, text='Create Lesson', style='green/black.TButton',
                                       command=lambda: transfer_to(lambda: draw_create_lessons_form(root, ttk),
@@ -364,7 +364,7 @@ def draw_create_lessons_form(root, ttk):
     pass
 
 
-def draw_practice(root, ttk , practice):
+def draw_practice(root, ttk , practice,mainframe):
     # Set fonts for the menu widgets.
     # print(font.families()) to print available font families.
 
@@ -407,7 +407,10 @@ def draw_practice(root, ttk , practice):
     run_button = ttk.Button(bottom_frame_top, text='Run Code', style='B_DO1.TButton',
                                cursor="target", command=lambda: practice(lesson_input, registers))
 
+    #reset_button = ttk.Button(bottom_frame_bottom, text='Reset', style='B_DO1.TButton', cursor="target")
     menu_escape.pack(side='left', padx=10)
     run_button.pack(side='right', padx=10)
+    #reset_button.pack(side='left',padx=10)
     reference_button.pack(side='right', padx=10)
     pass
+
