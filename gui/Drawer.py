@@ -93,11 +93,9 @@ def draw_lesson(root, ttk, lesson, submit_function, hint_function):
                                   cursor="target")#, command=draw_reference)
 
     popup = Menu(root, tearoff=0, bg = '#f27446', font = 20)
-    # for reference in lesson.lesson_reference:
-    #      popup.add_command(label=reference['Name'], command=lambda: draw_reference(reference['Type'],reference['Path']))
-    #      print(reference)
-    popup.add_command(label="Green Sheet", command=lambda:draw_reference('local_file', 'MIPS_Green_Sheet.pdf'))
-    popup.add_command(label="Test Link", command=lambda:draw_reference('web_link', 'https://en.wikipedia.org/wiki/MIPS_architecture') )
+
+    for reference in lesson.lesson_reference:
+          popup.add_command(label=reference['Name'], command=lambda r=reference: draw_reference(r['Type'],r['Path']))
 
     def do_popup(event):
         # display the popup menu
