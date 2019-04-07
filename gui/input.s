@@ -12,9 +12,9 @@
 main:
 
 	# your code here
-	addi $t0, $0, 3
-	addi $t1, $0, 5
-	add $t4, $t0, $t1
+	li $t0, 3
+	li $t1, 5
+	add $t2, $t0, $t1
 
 
 	# All memory structures are placed after the
