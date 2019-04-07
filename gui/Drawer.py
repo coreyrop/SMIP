@@ -1,15 +1,20 @@
 import tkinter as tk
-from tkinter import font
-from tkinter import messagebox
+from tkinter import font, messagebox, Menu
+from lessons.Lesson_Transition import get_next_lesson, append_new_lesson
 from gui.ReferenceWindow import draw_reference
-from gui.LessonPage import submit_code
-from gui.Utilities import transfer_to
+from gui.LessonPage import submit_code, get_text
+from gui.Utilities import transfer_to, get_relative_file_path
+from lessons.Lesson_Workbook import initialize_workbook
+import re
 
 SIDEBAR_COLUMN_WIDTH = 5
 registers = []
 
 
 def draw_menu(root, ttk, next_lesson):
+    # Resize in case window has been adjusted
+    if root.winfo_width() > 700:
+        root.minsize(700, root.winfo_screenheight())
     # Set fonts for the menu widgets.
     # print(font.families()) to print available font families.
     menuLabel_font = font.Font(family="Loma", size=24, weight="bold")
@@ -29,23 +34,28 @@ def draw_menu(root, ttk, next_lesson):
     label_banner = ttk.Label(main_frame, text='\tWelcome to SMIP.\n Your Best Friend for Learning MIPS ',
                              style='green/black.TLabel', width=700, anchor="center")
     label_plug = ttk.Label(main_frame, style='textBox.TLabel', text=' Our repo: https://github.com/coreyrop/SMIP\n\t'
-                                                                    '-Last Updated: 02/20/2019-')
+                                                                    '-Last Updated: 03/26/2019-')
 
     label_banner.pack(pady=10)
     label_plug.pack(side="bottom", pady=5)
 
     button1 = ttk.Button(main_frame, text='Start', style='green/black.TButton',
                          command=lambda: transfer_to(
-                             lambda: draw_lesson(root, ttk, next_lesson, submit_code, messagebox.showinfo), main_frame))
+                             lambda: draw_lesson(root, ttk, get_next_lesson(), submit_code, messagebox.showinfo),
+                             main_frame))
     button2 = ttk.Button(main_frame, text='Select Lesson', style='green/black.TButton')
     button3 = ttk.Button(main_frame, text='Practice', style='green/black.TButton')
     button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton', command=draw_reference)
+    create_lesson_button = ttk.Button(main_frame, text='Create Lesson', style='green/black.TButton',
+                                      command=lambda: transfer_to(lambda: draw_create_lessons_form(root, ttk),
+                                                                  main_frame))
     button5 = ttk.Button(main_frame, text='Exit', style='green/black.TButton', command=quit)
 
     button1.pack(pady=30)
     button2.pack(pady=30)
     button3.pack(pady=30)
     button4.pack(pady=30)
+    create_lesson_button.pack(pady=30)
     button5.pack(pady=30)
     pass
 
@@ -76,9 +86,8 @@ def draw_lesson(root, ttk, lesson, submit_function, hint_function):
     bottom_frame_bottom.pack(expand=True, fill="both", side="bottom")
 
     label_instruction = ttk.Label(center_frame, text=lesson.lesson_prompt, style='B_DO1.TLabel')
-    lesson_input = ttk.Entry(master=center_frame, font=menuLabel_font)
     lesson_input = tk.Text(center_frame, height=30, width=100)
-    lesson_input.insert(tk.END, lesson.code_base)
+    lesson_input.insert(tk.END, get_text(lesson.code_base))
 
     label_instruction.pack(side="top", pady=5)
     lesson_input.pack(pady=20, padx=10)
@@ -144,4 +153,211 @@ def draw_sidebar(sidebar, registers):
     tk.Label(sidebar, text="$ra", width=SIDEBAR_COLUMN_WIDTH).grid(row=32, column=0)
     for i in range(32):
         tk.Label(sidebar, text=i, width=SIDEBAR_COLUMN_WIDTH).grid(row=i + 1, column=1)
+    pass
+
+
+def draw_create_lessons_form(root, ttk):
+    # Need extra room because we have 3 rows of info.
+    root.minsize(900, root.winfo_screenheight())
+    # Cover the whole screen with the frame.
+    main_frame = tk.Frame(root, bg='medium blue', width=root.winfo_width(), height=root.winfo_height())
+    # Fill the frame with the background.
+    main_frame.pack(expand=True, fill="both")
+    # Include separate font choices for human readable text.
+    menuButton_font = font.Font(family="Loma", size=22, weight="bold")
+    create_field_font = font.Font(family="Loma", size=20, weight="normal")
+    create_button_font = font.Font(family="Loma", size=18, weight="bold")
+    register_label_font = font.Font(family="Latin Modern Roman", size=14, weight="bold")
+    register_entry_font = font.Font(family="Latin Modern Roman", size=14, weight="normal")
+    # Apply style settings.
+    ttk.Style().configure('B_DO1.TLabel', foreground='black', background='DarkOrange1', width=20,
+                          font=create_field_font, anchor="CENTER")
+    ttk.Style().configure('B_DO1.TButton', foreground='black', background='DarkOrange1', font=create_button_font,
+                          width=15)
+    ttk.Style().configure('menu_buttons.TButton', foreground='black', background='DarkOrange1', font=menuButton_font,
+                          width=15, padx=5)
+    ttk.Style().configure('references.TLabel', foreground='black', background='DarkOrange1', width=12,
+                          font=create_field_font, anchor="CENTER")
+    ttk.Style().configure('TMenuButton', background='DarkOrange1')
+
+    # Define register fields.
+    register_fields = {i: {} for i in range(32)}
+
+    references = []
+
+    # Make an "added reference dropdown" which reflects added references.
+    str_var = tk.StringVar(root)
+    included_references = ['None']
+    str_var.set('None')
+    reference_menu = tk.OptionMenu(main_frame, str_var, *included_references)
+
+    lesson_title_label = ttk.Label(main_frame, text='Lesson Title', style='B_DO1.TLabel')
+    lesson_prompt_label = ttk.Label(main_frame, text='Lesson Prompt', style='B_DO1.TLabel')
+    lesson_hint_label = ttk.Label(main_frame, text='Lesson Hint', style='B_DO1.TLabel')
+    lesson_filepath_label = ttk.Label(main_frame, text='Relative File Path', style='B_DO1.TLabel')
+    reference_menu_label = ttk.Label(main_frame, text='References', style='references.TLabel')
+
+    for i in register_fields.keys():
+        register_fields[i]['label'] = ttk.Label(main_frame, text='$r' + str(i) + ' ', font=register_label_font)
+
+    lesson_title_label.grid(row=0, column=0, pady=10, padx=20)
+    lesson_prompt_label.grid(row=1, column=0, pady=10)
+    lesson_hint_label.grid(row=2, column=0, pady=10)
+    lesson_filepath_label.grid(row=3, column=0, pady=20)
+    reference_menu_label.grid(row=0, column=2)
+    reference_menu.grid(row=1, column=2)
+
+    for i in register_fields.keys():
+        if i < 16:
+            if i > 9:
+                new_text = register_fields[i]['label'].cget("text")
+                register_fields[i]['label'] = ttk.Label(main_frame, text=new_text[:4], font=register_label_font)
+            register_fields[i]['label'].grid(row=i + 4, column=1, sticky='w', padx=10)
+        else:
+            new_text = register_fields[i]['label'].cget("text")
+            register_fields[i]['label'] = ttk.Label(main_frame, text=new_text[:4], font=register_label_font)
+            register_fields[i]['label'].grid(row=i - 16 + 4, column=1, stick='e', padx=3)
+
+    lesson_title_entry = ttk.Entry(main_frame, font=create_button_font)
+    lesson_prompt_entry = ttk.Entry(main_frame, font=create_button_font)
+    lesson_hint_entry = ttk.Entry(main_frame, font=create_button_font)
+    lesson_filepath_current_label = ttk.Label(main_frame, text='None Set', font=create_field_font, width=9,
+                                              anchor='center')
+    for i in register_fields.keys():
+        register_fields[i]['entry'] = ttk.Entry(main_frame, font=register_entry_font)
+
+    lesson_title_entry.grid(row=0, column=1)
+    lesson_prompt_entry.grid(row=1, column=1)
+    lesson_hint_entry.grid(row=2, column=1)
+    lesson_filepath_current_label.grid(row=3, column=1)
+    for i in register_fields.keys():
+        if i < 16:
+            register_fields[i]['entry'].grid(row=i + 4, column=0, sticky='e', padx=3)
+        else:
+            register_fields[i]['entry'].grid(row=i - 16 + 4, column=2, padx=3)
+
+    lesson_filepath_button = ttk.Button(main_frame, text='Select', cursor='target', style='B_DO1.TButton',
+                                        command=lambda: lesson_filepath_current_label.config(
+                                            text=get_relative_file_path([('MIPS code files', '*.s')])))
+    lesson_filepath_button.grid(row=3, column=2)
+
+    main_menu_button = ttk.Button(main_frame, text='Main Menu', cursor='target', style='menu_buttons.TButton',
+                                  command=lambda: transfer_to(lambda: draw_menu(root, ttk, None), main_frame))
+
+    def submit_confirmation():
+        if bool(lesson_title_entry.get() and not lesson_title_entry.get().isspace()) and bool(
+                lesson_prompt_entry.get() and not lesson_prompt_entry.get().isspace()) and bool(
+                lesson_hint_entry.get() and not lesson_hint_entry.get().isspace()) and all(
+                [re.match('[+-]?\d', register_fields[i]['entry'].get()) is not None for i in register_fields.keys() if
+                 not register_fields[i]['entry'].get().isspace() and register_fields[i]['entry'].get()]):
+
+            append_new_lesson(initialize_workbook('../lesson_files/' + lesson_title_entry.get(),
+                                                  lesson_title=lesson_title_entry.get(),
+                                                  lesson_prompt=lesson_prompt_entry.get(),
+                                                  lesson_hint=lesson_hint_entry.get(),
+                                                  lesson_filepath=lesson_filepath_current_label
+                                                  ['text'],
+                                                  registers={
+                                                      j: register_fields[j]['entry'].get() for j in
+                                                      register_fields.keys()}, references=references))
+
+            lesson_title_entry.delete(0, 'end')
+            lesson_prompt_entry.delete(0, 'end')
+            lesson_hint_entry.delete(0, 'end')
+            lesson_filepath_current_label.config(text='None Set')
+
+            included_references.clear()
+            reference_menu['menu'].delete(0, 'end')
+            reference_menu['menu'].add_command(label='None', command=lambda: str_var.set('None'))
+
+            for i in register_fields.keys():
+                register_fields[i]['entry'].delete(0, 'end')
+
+            # Make a lesson created user alert here, then grid forget.
+            # NOTICE: It is forgotten, NOT destroyed.
+            alert = tk.Label(main_frame, background='green2', text='Lesson Created!', font=menuButton_font)
+        else:
+            alert = tk.Label(main_frame, background='red2', text='Invalid Values', font=menuButton_font)
+
+        alert.grid(row=40, column=1)
+        # Root must be updated for changes to be displayed.
+        root.update()
+        # Modest sleep time of about 3 seconds, for user to take notice.
+        alert.after(500, alert.grid_forget)
+        pass
+
+    # This part is just to make the button string more accessible.
+    # It might be deleted later.
+    create_lesson_str = tk.StringVar()
+    create_lesson_str.set('Create Lesson')
+    submit_lesson_button = ttk.Button(main_frame, text=create_lesson_str.get(), cursor='target',
+                                      style='menu_buttons.TButton',
+                                      command=submit_confirmation)
+
+    def submit_ref(ref, dict, win):
+        ref.append(dict)
+        included_references.append(dict['Name'])
+        reference_menu['menu'].add_command(label=dict['Name'], command=lambda value=dict['Name']: str_var.set(value))
+        win.destroy()
+        pass
+
+    def add_pdf_reference_form(references):
+
+        win = tk.Toplevel()
+        win.wm_title("Add PDF Reference")
+
+        name_label = tk.Label(win, text="Reference Name")
+        name_label.grid(row=0, column=0)
+
+        name_entry = tk.Entry(win, font=create_field_font)
+        name_entry.grid(row=0, column=1)
+
+        current_path_label = tk.Label(win, text='None Set', font=create_field_font)
+        select_file_button = ttk.Button(win, text="Select PDF", command=lambda: current_path_label.config(
+            text=get_relative_file_path([('PDF files', '*.pdf')])))
+        select_file_button.grid(row=1, column=0)
+        current_path_label.grid(row=1, column=1)
+
+        submit_button = tk.Button(win, text='Add Reference', command=lambda: submit_ref(references,
+                                                                                        {'Name': name_entry.get(),
+                                                                                         'Type': 'local_file',
+                                                                                         'Path': current_path_label[
+                                                                                             'text']}, win))
+        submit_button.grid(row=2, column=0)
+        pass
+
+    def add_link_reference_form(references):
+
+        win = tk.Toplevel()
+        win.wm_title("Add Link Reference")
+
+        name_label = tk.Label(win, text="Reference Name")
+        name_label.grid(row=0, column=0)
+
+        name_entry = tk.Entry(win, font=create_field_font)
+        name_entry.grid(row=0, column=1)
+
+        url_label = tk.Label(win, text='URL')
+        url_entry = tk.Entry(win, font=create_field_font)
+        url_label.grid(row=1, column=0)
+        url_entry.grid(row=1, column=1)
+
+        submit_button = tk.Button(win, text='Add Reference',
+                                  command=lambda: submit_ref(references, {'Name': name_entry.get(), 'Type': 'web_link',
+                                                                          'Path': url_entry.get()},
+                                                             win))
+        submit_button.grid(row=2, column=0)
+        pass
+
+    popup = Menu(root, tearoff=0, bg='#f27446', font=20)
+    popup.add_command(label='PDF', command=lambda: add_pdf_reference_form(references))
+    popup.add_command(label='Link', command=lambda: add_link_reference_form(references))
+
+    reference_menu_button = ttk.Button(main_frame, text='Add a Reference', cursor='target',
+                                       style='menu_buttons.TButton')
+    reference_menu_button.bind("<ButtonRelease-1>", lambda event: popup.tk_popup(event.x_root, event.y_root, 0))
+
+    reference_menu_button.grid(row=2, column=2, padx=10)
+    main_menu_button.grid(row=40, column=0, sticky='s', pady=15)
+    submit_lesson_button.grid(row=40, column=1, sticky='s', pady=15)
     pass
