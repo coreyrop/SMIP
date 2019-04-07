@@ -1,8 +1,6 @@
 import tkinter as tk
 from lessons.Submission import run_MIPS
-from lessons.Lesson_Transition import lessons
-import pickle
-import os
+from lessons.Lesson_Transition import lessons, write_completed
 """
 Draws a lesson to the frame
 root: tkinter root to draw to 
@@ -48,33 +46,6 @@ def update_registers(answers, register_labels):
         register_labels[register].config(text=value)
     pass
 
-def read_from_pickle(filename):
-    dict = []
-    try:
-        with (open(filename, 'rb')) as openfile:
-            while True:
-                try:
-                    dict.append(pickle.load(openfile))
-                    print(dict)
-                except EOFError:
-                    return dict
-    except FileNotFoundError:
-        pass
-
-def write_completed(title, bool):
-    scores = []
-    if os.path.exists('../lesson_files/Submissions/completed.pickle'):
-        with open('../lesson_files/Submissions/completed.pickle', 'rb') as rfp:
-            scores = pickle.load(rfp)
-    dict = title, bool
-    scores.append(dict)
-
-    with open('../lesson_files/Submissions/completed.pickle', 'wb') as file:
-        pickle.dump(scores, file)
-
-    # with open('../lesson_files/Submissions/completed.pickle', 'rb') as rfp:
-    #     scores = pickle.load(rfp)
-    pass
 
 def populate_lesson_completed(dict):
     for title in dict:
