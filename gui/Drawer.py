@@ -1,9 +1,6 @@
 import tkinter as tk
 from tkinter import font, messagebox, Menu
-from lessons.Lesson_Transition import get_next_lesson, get_previous_lesson, append_new_lesson
-from tkinter import font
-from tkinter import messagebox
-from tkinter import *
+from lessons.Lesson_Transition import get_next_lesson, get_previous_lesson, append_new_lesson, lessons
 from gui.ReferenceWindow import draw_reference
 from gui.LessonPage import submit_code, get_text ,run_practice
 from gui.Utilities import transfer_to, get_relative_file_path
@@ -42,10 +39,15 @@ def draw_menu(root, ttk, next_lesson):
     label_banner.pack(pady=10)
     label_plug.pack(side="bottom", pady=5)
 
+    def lesson_validation():
+        if lessons:
+            transfer_to(
+                lambda: draw_lesson(root, ttk, get_next_lesson(), submit_code, messagebox.showinfo),
+                main_frame)
+        pass
+
     button1 = ttk.Button(main_frame, text='Start', style='green/black.TButton',
-                         command=lambda: transfer_to(
-                             lambda: draw_lesson(root, ttk, get_next_lesson(), submit_code, messagebox.showinfo),
-                             main_frame))
+                         command=lesson_validation)
 
     button2 = ttk.Button(main_frame, text='Select Lesson', style='green/black.TButton',
                          command=lambda: transfer_to(lambda: draw_lesson_select(root, ttk), main_frame))
@@ -81,8 +83,6 @@ def draw_lesson(root, ttk, lesson, submit_function, hint_function):
 
     lesson_header = tk.Frame(master=root, bg="medium blue")
     center_frame = tk.Frame(master=root, bg="medium blue")
-    bottom_frame_top = tk.Frame(master=root, bg="red2")
-    bottom_frame_bottom = tk.Frame(master=root, bg="red2")
     register_frame = tk.Frame(root, width=200, bg='medium blue', height=500, relief='sunken', borderwidth=2)
 
     # TODO Need to properly gridify this page.
@@ -99,8 +99,6 @@ def draw_lesson(root, ttk, lesson, submit_function, hint_function):
     register_frame.grid(row=0, column=1, columnspan=1, sticky='w')
     lesson_header.grid(row=0, column=0)
     center_frame.grid(row=1, column=0, columnspan=2)
-    bottom_frame_top.grid(row=2, column=1)
-    bottom_frame_bottom.grid(row=2, column=2)
 
     label_instruction = ttk.Label(lesson_header, text=lesson.lesson_prompt, style='B_DO1.TLabel')
     lesson_input = tk.Text(lesson_header, height=30, width=100)
@@ -112,12 +110,12 @@ def draw_lesson(root, ttk, lesson, submit_function, hint_function):
 
     hints = ''.join([str(i+1)+'. ' + lesson.lesson_hint[i] + '\n\n' for i in range(len(lesson.lesson_hint))])
 
-    menu_escape = ttk.Button(bottom_frame_top, text='Main Menu', style='B_DO1.TButton', cursor="target",
+    menu_escape = ttk.Button(center_frame, text='Main Menu', style='B_DO1.TButton', cursor="target",
                              command=lambda: transfer_to(lambda: draw_menu(root, ttk, lesson), center_frame,
-                                                         bottom_frame_top, bottom_frame_bottom, register_frame))
-    hint_button = ttk.Button(bottom_frame_bottom, text='Hint', style='B_DO1.TButton',
+                                                         register_frame))
+    hint_button = ttk.Button(center_frame, text='Hint', style='B_DO1.TButton',
                              cursor="target", command=lambda: hint_function("Hint", hints))
-    reference_button = ttk.Button(bottom_frame_bottom, text='Reference', style='B_DO1.TButton',
+    reference_button = ttk.Button(center_frame, text='Reference', style='B_DO1.TButton',
                                   cursor="target")#, command=draw_reference)
 
     popup_reference = Menu(root, tearoff=0, bg = '#f27446', font = 20)
@@ -133,21 +131,18 @@ def draw_lesson(root, ttk, lesson, submit_function, hint_function):
 
     reference_button.bind("<ButtonRelease-1>", do_popup_ref)
 
-    submit_button = ttk.Button(bottom_frame_top, text='Submit Code', style='B_DO1.TButton',
+    submit_button = ttk.Button(center_frame, text='Submit Code', style='B_DO1.TButton',
                                cursor="target", command=lambda: submit_function(lesson_input, registers, lesson))
     previous_lesson_button = ttk.Button(center_frame, text='Previous Lesson', style='B_DO1.TButton',
                                         cursor='target', command=lambda: transfer_to(lambda: draw_lesson(root, ttk,
                                                                                      get_previous_lesson(), submit_code,
                                                                                      messagebox.showinfo), center_frame,
-                                                                                     bottom_frame_top,
-                                                                                     bottom_frame_bottom,
                                                                                      register_frame))
 
     next_lesson_button = ttk.Button(center_frame, text='Next Lesson', style='B_DO1.TButton',
                                     cursor='target', command=lambda:  transfer_to(lambda: draw_lesson(root, ttk,
                                                                                   get_next_lesson(), submit_code,
                                                                                   messagebox.showinfo), center_frame,
-                                                                                  bottom_frame_top, bottom_frame_bottom,
                                                                                   register_frame))
 
     menu_escape.grid(row=4, column=0, padx=20, pady=20)

@@ -2,8 +2,8 @@ import os, sys, subprocess, webbrowser, enum
 
 
 class Reference(enum.Enum):
-    web_link = 0
-    local_file = 1
+    web_link = 'web_link'
+    local_file = 'local_file'
 
 def draw_reference_path(file_path):
 
@@ -27,8 +27,6 @@ def draw_reference_link(file_link):
 
 
 def draw_reference(type, path):
-    print(type)
-    print(path)
     if Reference[type].value == Reference.local_file.value:
         draw_reference_path(file_path = path)
     elif Reference[type].value == Reference.web_link.value:

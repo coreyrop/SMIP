@@ -7,7 +7,7 @@ class Lesson:
     answer: Dict that stores the necessary registers as keys
         and the correct final values as their value mapping
     """
-    def __init__(self, title, prompt, answer, hint, base_code, completed):
+    def __init__(self, title, prompt, answer, hint, reference, base_code, completed):
         self.lesson_prompt = prompt
         self.lesson_hint = hint
         self.lesson_reference = reference

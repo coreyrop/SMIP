@@ -114,7 +114,7 @@ def load_lesson_from_workbook(filename):
         references.append({'Name': sheet['G'+str(index)].value, 'Type': sheet['H'+str(index)].value, 'Path': sheet['I'+str(index)].value})
         index += 1
     d = dict
-    return Lesson(sheet['B1'].value, sheet['B2'].value, answer, sheet['B3'].value, sheet['B4'].value, dict.get(sheet['B1'].value, False))
+    return Lesson(sheet['B1'].value, sheet['B2'].value, answer, [sheet['B3'].value], references, sheet['B4'].value, dict.get(sheet['B1'].value, False))
 
 
 

@@ -3,13 +3,15 @@ lesson_index = -1
 lessons = []
 filename = '../lesson_files/Submissions/profile.pickle'
 
+
 def get_next_lesson():
-    global lesson_index
-    if lesson_index + 1 < len(lessons):
-        lesson_index += 1
-        return lessons[lesson_index]
-    else:
-        return lessons[lesson_index]
+    if lessons:
+        global lesson_index
+        if lesson_index + 1 < len(lessons):
+            lesson_index += 1
+            return lessons[lesson_index]
+        else:
+            return lessons[lesson_index]
 
 
 def get_previous_lesson():
