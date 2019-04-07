@@ -5,7 +5,7 @@ from tkinter import font
 from tkinter import messagebox
 from tkinter import *
 from gui.ReferenceWindow import draw_reference
-from gui.LessonPage import submit_code, get_text
+from gui.LessonPage import submit_code, get_text ,run_practice
 from gui.Utilities import transfer_to, get_relative_file_path
 from lessons.Lesson_Workbook import initialize_workbook
 import re
@@ -47,8 +47,12 @@ def draw_menu(root, ttk, next_lesson):
                              lambda: draw_lesson(root, ttk, get_next_lesson(), submit_code, messagebox.showinfo),
                              main_frame))
     button2 = ttk.Button(main_frame, text='Select Lesson', style='green/black.TButton')
-    button3 = ttk.Button(main_frame, text='Practice', style='green/black.TButton')
-    button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton', command=lambda:draw_reference("local_file", "MIPS_Green_Sheet.pdf"))
+    button3 = ttk.Button(main_frame, text='Practice', style='green/black.TButton', command=lambda: transfer_to(
+        lambda: draw_practice(root, ttk, run_practice,main_frame), main_frame))
+    button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton', command=draw_reference)
+    create_lesson_button = ttk.Button(main_frame, text='Create Lesson', style='green/black.TButton',
+                                      command=lambda: transfer_to(lambda: draw_create_lessons_form(root, ttk),
+                                                                  main_frame))
     button5 = ttk.Button(main_frame, text='Exit', style='green/black.TButton', command=quit)
 
     button1.pack(pady=30)
@@ -405,3 +409,52 @@ def draw_create_lessons_form(root, ttk):
     main_menu_button.grid(row=40, column=0, sticky='s', pady=15)
     submit_lesson_button.grid(row=40, column=1, sticky='s', pady=15)
     pass
+
+
+def draw_practice(root, ttk , practice,mainframe):
+    # Set fonts for the menu widgets.
+    # print(font.families()) to print available font families.
+
+    menuLabel_font = font.Font(family="Loma", size=22, weight="bold")
+    menuButton_font = font.Font(family="Loma", size=20, weight="normal")
+    # background="..." doesn't work...
+    ttk.Style().configure('B_DO1.TLabel', foreground='black', background='DarkOrange1', font=menuLabel_font)
+    ttk.Style().configure('B_DO1.TButton', foreground='black', background='DarkOrange1', font=menuButton_font, width=15)
+
+    lesson_header = tk.Frame(master=root, bg="medium blue")
+    center_frame = tk.Frame(master=root, bg="medium blue")
+    bottom_frame_top = tk.Frame(master=root, bg="medium blue")
+    bottom_frame_bottom = tk.Frame(master=root, bg="medium blue")
+    register_frame = tk.Frame(root, width=200, bg='white', height=500, relief='sunken', borderwidth=2)
+
+    registers = []
+    draw_sidebar(register_frame, registers)
+
+    # Pack lesson_header Frame over the top of the center_frame.
+    register_frame.pack(expand=True, fill='both', side='left')
+    lesson_header.pack(fill="x")
+    center_frame.pack(expand=True, fill="both")
+    bottom_frame_top.pack(expand=True, fill="both")
+    bottom_frame_bottom.pack(expand=True, fill="both", side="bottom")
+
+    label_instruction = ttk.Label(center_frame, text="Time to Practice Some MIPS ", style='B_DO1.TLabel')
+    lesson_input = tk.Text(center_frame, height=30, width=100)
+    lesson_input.insert(tk.END, "#Hello There, Write Your Code Here For Practice")
+
+    label_instruction.pack(side="top", pady=5)
+    lesson_input.pack(pady=20, padx=10)
+    lesson = ""
+
+    menu_escape = ttk.Button(bottom_frame_top, text='Main Menu', style='B_DO1.TButton', cursor="target",
+                             command=lambda: transfer_to(lambda: draw_menu(root, ttk,lesson), center_frame,
+                                                         bottom_frame_top, bottom_frame_bottom, register_frame))
+
+    reference_button = ttk.Button(bottom_frame_bottom, text='Reference', style='B_DO1.TButton',
+                                  cursor="target", command=draw_reference)
+    run_button = ttk.Button(bottom_frame_top, text='Run Code', style='B_DO1.TButton',
+                               cursor="target", command=lambda: practice(lesson_input, registers))
+    menu_escape.pack(side='left', padx=10)
+    run_button.pack(side='right', padx=10)
+    reference_button.pack(padx=10)
+    pass
+

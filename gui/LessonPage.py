@@ -17,10 +17,22 @@ def submit_code(user_input, register_labels, lesson):
     results = run_MIPS(filename)
     update_registers(results, register_labels)
 
+
     if lesson.check_solution(results):
         print('Passed!!')
     else:
         print('Failed!!')
+    pass
+
+
+def run_practice(user_input, register_labels):
+    filename = '../lesson_files/Submissions/(Practice).s'
+    f = open(filename, 'w')
+    f.write(user_input.get("1.0", tk.END))
+    f.close()
+    results = run_MIPS(filename)
+    update_registers(results, register_labels)
+    print(" SMIP RUNS YOUR  CODE ")
     pass
 
 
