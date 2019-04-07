@@ -13,6 +13,7 @@ class Lesson:
         self.lesson_title = title
         self.lesson_answer = answer
         self.code_base = base_code
+        self.lesson_completed = False
         pass
 
     """

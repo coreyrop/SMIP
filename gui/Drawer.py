@@ -155,7 +155,7 @@ def draw_sidebar(sidebar, registers):
     tk.Label(sidebar, text="$fp", width=SIDEBAR_COLUMN_WIDTH).grid(row=31, column=0)
     tk.Label(sidebar, text="$ra", width=SIDEBAR_COLUMN_WIDTH).grid(row=32, column=0)
     for i in range(32):
-        tk.Label(sidebar, text=i, width=SIDEBAR_COLUMN_WIDTH).grid(row=i + 1, column=1)
+        tk.Label(sidebar, text=i, width=SIDEBAR_COLUMN_WIDTH).grid(row=i+1, column=1)
     pass
 
 
@@ -365,25 +365,28 @@ def draw_create_lessons_form(root, ttk):
     submit_lesson_button.grid(row=40, column=1, sticky='s', pady=15)
     pass
 
+
+
+#lambda: draw_lesson(root, ttk, get_next_lesson(), submit_code, messagebox.showinfo),
+#                             main_frame)
 def draw_lesson_select(root, ttk):
     main_frame = tk.Frame(root, bg='medium blue', width=root.winfo_width(), height=root.winfo_height())
     main_frame.pack(expand=True, fill="both")
-    button_list = []
 
     scframe = VerticalScrolledFrame(main_frame)
     scframe.pack()
 
     for i in range(len(lessons)):
+        color = lambda i=i: 'green' if lessons[i].lesson_completed else 'red'
         btn = tk.Button(scframe.interior, height=1, width=20, relief=tk.FLAT,
-            bg="gray99", fg="purple3",
-            font="Dosis", text=lessons[i].lesson_title, command=lambda: transfer_to(
+            bg="gray99", fg=color(i),
+            font="Dosis", text=lessons[i].lesson_title, command=lambda i=i: transfer_to(
                              lambda: draw_lesson(root, ttk, lessons[i], submit_code, messagebox.showinfo), main_frame))
-        print(i)
-        print(lessons[i].lesson_prompt)
-        button_list.append(btn)
 
         btn.pack(padx=10, pady=5, side=tk.TOP)
-
+    main_menu_button = ttk.Button(main_frame, text='Main Menu', cursor='target', style='menu_buttons.TButton',
+                                  command=lambda: transfer_to(lambda: draw_menu(root, ttk, None), main_frame))
+    main_menu_button.pack()
     #main_frame.pack()
     pass
 

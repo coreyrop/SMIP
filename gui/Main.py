@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from gui.Drawer import draw_menu
 from lessons.Lesson_Transition import get_next_lesson
-
+from gui.LessonPage import read_from_pickle
 if __name__ == '__main__':
     root = tk.Tk()
     root.title("SMIP: The Student MIPS Instruction Program")
@@ -19,6 +19,7 @@ if __name__ == '__main__':
     x = (their_width / 2) - (700 / 2)
     y = (their_height / 2) - (800 / 2)
     root.geometry("%dx%d+%d+%d" % (700, 800, x, y))
-
+    dict = read_from_pickle('../lesson_files/Submissions/completed.pickle')
     draw_menu(root, ttk, get_next_lesson())
+
     root.mainloop()
