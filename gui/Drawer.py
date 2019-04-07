@@ -406,11 +406,8 @@ def draw_practice(root, ttk , practice,mainframe):
                                   cursor="target", command=draw_reference)
     run_button = ttk.Button(bottom_frame_top, text='Run Code', style='B_DO1.TButton',
                                cursor="target", command=lambda: practice(lesson_input, registers))
-
-    #reset_button = ttk.Button(bottom_frame_bottom, text='Reset', style='B_DO1.TButton', cursor="target")
     menu_escape.pack(side='left', padx=10)
     run_button.pack(side='right', padx=10)
-    #reset_button.pack(side='left',padx=10)
-    reference_button.pack(side='right', padx=10)
+    reference_button.pack(padx=10)
     pass
 
