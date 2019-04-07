@@ -1,5 +1,6 @@
 import tkinter as tk
 from lessons.Submission import run_MIPS
+from lessons.Lesson_Transition import lessons, write_completed
 """
 Draws a lesson to the frame
 root: tkinter root to draw to 
@@ -19,8 +20,12 @@ def submit_code(user_input, register_labels, lesson):
 
 
     if lesson.check_solution(results):
+        lesson.lesson_completed = True
+        write_completed(lesson.lesson_title, True)
         print('Passed!!')
     else:
+        lesson.lesson_completed = False
+        write_completed(lesson.lesson_title, False)
         print('Failed!!')
     pass
 
@@ -54,3 +59,9 @@ def update_registers(answers, register_labels):
     pass
 
 
+def populate_lesson_completed(dict):
+    for title in dict:
+        for i in range(len(lessons)):
+            if (title == lessons[i].lesson_title):
+                lessons[i].lesson_completed = True
+    return lessons

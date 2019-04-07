@@ -1,5 +1,6 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import PatternFill, Font
+from .Lesson_Transition import dict
 from .Lesson import Lesson
 import re
 import os
@@ -112,8 +113,9 @@ def load_lesson_from_workbook(filename):
     while sheet['G'+str(index)].value is not None:
         references.append({'Name': sheet['G'+str(index)].value, 'Type': sheet['H'+str(index)].value, 'Path': sheet['I'+str(index)].value})
         index += 1
+    d = dict
+    return Lesson(sheet['B1'].value, sheet['B2'].value, answer, sheet['B3'].value, sheet['B4'].value, dict.get(sheet['B1'].value, False))
 
-    return Lesson(sheet['B1'].value, sheet['B2'].value, answer, sheet['B3'].value, sheet['B4'].value)
 
 
 def load_lessons():
