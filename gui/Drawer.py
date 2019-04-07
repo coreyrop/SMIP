@@ -103,24 +103,29 @@ def draw_lesson(root, ttk, lesson, submit_function, hint_function):
     label_instruction.grid(pady=5, sticky='n')
     lesson_input.grid(pady=20, padx=10)
 
-    menu_escape = ttk.Button(center_frame, text='Main Menu', style='B_DO1.TButton', cursor="target",
+
+    hints = ''.join([str(i+1)+'. ' + lesson.lesson_hint[i] + '\n\n' for i in range(len(lesson.lesson_hint))])
+
+    menu_escape = ttk.Button(bottom_frame_top, text='Main Menu', style='B_DO1.TButton', cursor="target",
                              command=lambda: transfer_to(lambda: draw_menu(root, ttk, lesson), center_frame,
                                                          bottom_frame_top, bottom_frame_bottom, register_frame))
-    hint_button = ttk.Button(center_frame, text='Hint', style='B_DO1.TButton',
-                             cursor="target", command=lambda: hint_function("Hint", lesson.lesson_hint))
+    hint_button = ttk.Button(bottom_frame_bottom, text='Hint', style='B_DO1.TButton',
+                             cursor="target", command=lambda: hint_function("Hint", hints))
     reference_button = ttk.Button(bottom_frame_bottom, text='Reference', style='B_DO1.TButton',
                                   cursor="target")#, command=draw_reference)
 
-    popup = Menu(root, tearoff=0, bg = '#f27446', font = 20)
+    popup_reference = Menu(root, tearoff=0, bg = '#f27446', font = 20)
 
     for reference in lesson.lesson_reference:
-          popup.add_command(label=reference['Name'], command=lambda r=reference: draw_reference(r['Type'],r['Path']))
+        popup_reference.add_command(label=reference['Name'], command=lambda r=reference: draw_reference(r['Type'],r['Path']))
 
-    def do_popup(event):
+
+    def do_popup_ref(event):
         # display the popup menu
-        popup.tk_popup(event.x_root, event.y_root, 0)
+        popup_reference.tk_popup(event.x_root, event.y_root, 0)
 
-    reference_button.bind("<ButtonRelease-1>", do_popup)
+
+    reference_button.bind("<ButtonRelease-1>", do_popup_ref)
 
     submit_button = ttk.Button(bottom_frame_top, text='Submit Code', style='B_DO1.TButton',
                                cursor="target", command=lambda: submit_function(lesson_input, registers, lesson))
