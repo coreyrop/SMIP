@@ -1,7 +1,20 @@
 import pickle
-lesson_index = -1
+lesson_index = 0
 lessons = []
 filename = '../lesson_files/Submissions/profile.pickle'
+
+
+def set_current_lesson_index(i):
+    global lesson_index
+    if i > -1:
+        lesson_index = i
+    pass
+
+
+def get_current_lesson():
+    if lessons:
+        return lessons[lesson_index]
+    pass
 
 
 def get_next_lesson():
@@ -37,12 +50,21 @@ def read_from_pickle(filename):
         return dict
     return dict
 
+
 dict = read_from_pickle(filename)
+
+
 def write_completed(title, bool):
     dict[title] = bool
     with open(filename, 'wb') as file:
         pickle.dump(dict, file)
     pass
-from lessons.Lesson_Workbook import load_lessons
 
-lessons = load_lessons()
+
+def init_lessons():
+    from lessons.Lesson_Workbook import load_lessons
+    global lessons
+    lessons = load_lessons()
+
+
+init_lessons()

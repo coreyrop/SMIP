@@ -5,6 +5,7 @@ class Reference(enum.Enum):
     web_link = 'web_link'
     local_file = 'local_file'
 
+
 def draw_reference_path(file_path):
 
     dirname = os.path.dirname(__file__)
@@ -21,6 +22,7 @@ def draw_reference_path(file_path):
         subprocess.call([opener, filename])
 
     pass
+
 
 def draw_reference_link(file_link):
     webbrowser.open(file_link)

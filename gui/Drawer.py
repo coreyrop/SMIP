@@ -1,17 +1,20 @@
 import tkinter as tk
 from tkinter import font, messagebox, Menu
-from lessons.Lesson_Transition import get_next_lesson, get_previous_lesson, append_new_lesson, lessons
+from lessons.Lesson_Transition import get_next_lesson, get_previous_lesson, append_new_lesson, set_current_lesson_index
 from gui.ReferenceWindow import draw_reference
-from gui.LessonPage import submit_code, get_text ,run_practice
+from gui.LessonPage import submit_code, get_text
 from gui.Utilities import transfer_to, get_relative_file_path
 from lessons.Lesson_Workbook import initialize_workbook
+from lessons.Lesson_Transition import get_current_lesson
+from .ReferenceWindow import Reference
 import re
 from lessons.Lesson_Transition import lessons
+
 SIDEBAR_COLUMN_WIDTH = 5
 registers = []
 
 
-def draw_menu(root, ttk, next_lesson):
+def draw_menu(root, ttk):
     # Resize in case window has been adjusted
     if root.winfo_width() > 700:
         root.minsize(700, root.winfo_screenheight())
@@ -42,7 +45,7 @@ def draw_menu(root, ttk, next_lesson):
     def lesson_validation():
         if lessons:
             transfer_to(
-                lambda: draw_lesson(root, ttk, get_next_lesson(), submit_code, messagebox.showinfo),
+                lambda: draw_lesson(root, ttk, get_current_lesson()),
                 main_frame)
         pass
 
@@ -52,8 +55,10 @@ def draw_menu(root, ttk, next_lesson):
     button2 = ttk.Button(main_frame, text='Select Lesson', style='green/black.TButton',
                          command=lambda: transfer_to(lambda: draw_lesson_select(root, ttk), main_frame))
     button3 = ttk.Button(main_frame, text='Practice', style='green/black.TButton', command=lambda: transfer_to(
-        lambda: draw_practice(root, ttk, run_practice,main_frame), main_frame))
-    button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton', command=draw_reference)
+        lambda: draw_practice(root, ttk), main_frame))
+    button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton',
+                         command=lambda: draw_reference(Reference.local_file.value,
+                                                        '../References/MIPS_Green_Sheet.pdf'))
     create_lesson_button = ttk.Button(main_frame, text='Create Lesson', style='green/black.TButton',
                                       command=lambda: transfer_to(lambda: draw_create_lessons_form(root, ttk),
                                                                   main_frame))
@@ -68,7 +73,7 @@ def draw_menu(root, ttk, next_lesson):
     pass
 
 
-def draw_lesson(root, ttk, lesson, submit_function, hint_function):
+def draw_lesson(root, ttk, lesson):
     # Resize page.
     if root.winfo_width() < 875:
         root.minsize(875, root.winfo_screenheight())
@@ -102,48 +107,46 @@ def draw_lesson(root, ttk, lesson, submit_function, hint_function):
 
     label_instruction = ttk.Label(lesson_header, text=lesson.lesson_prompt, style='B_DO1.TLabel')
     lesson_input = tk.Text(lesson_header, height=30, width=100)
-    lesson_input.insert(tk.END, get_text(lesson.code_base))
+    lesson_input.insert(tk.END, get_text(lesson))
 
     label_instruction.grid(pady=5, sticky='n')
     lesson_input.grid(pady=20, padx=10)
 
-
-    hints = ''.join([str(i+1)+'. ' + lesson.lesson_hint[i] + '\n\n' for i in range(len(lesson.lesson_hint))])
+    hints = ''.join([str(i + 1) + '. ' + lesson.lesson_hint[i] + '\n\n' for i in range(len(lesson.lesson_hint))])
 
     menu_escape = ttk.Button(center_frame, text='Main Menu', style='B_DO1.TButton', cursor="target",
-                             command=lambda: transfer_to(lambda: draw_menu(root, ttk, lesson), center_frame,
+                             command=lambda: transfer_to(lambda: draw_menu(root, ttk), center_frame,
                                                          register_frame))
     hint_button = ttk.Button(center_frame, text='Hint', style='B_DO1.TButton',
-                             cursor="target", command=lambda: hint_function("Hint", hints))
+                             cursor="target", command=lambda: messagebox.showinfo("Hint", hints))
     reference_button = ttk.Button(center_frame, text='Reference', style='B_DO1.TButton',
-                                  cursor="target")#, command=draw_reference)
+                                  cursor="target")
 
-    popup_reference = Menu(root, tearoff=0, bg = '#f27446', font = 20)
+    popup_reference = Menu(root, tearoff=0, bg='#f27446', font=20)
 
     for reference in lesson.lesson_reference:
-        popup_reference.add_command(label=reference['Name'], command=lambda r=reference: draw_reference(r['Type'],r['Path']))
-
+        popup_reference.add_command(label=reference['Name'],
+                                    command=lambda r=reference: draw_reference(r['Type'], r['Path']))
 
     def do_popup_ref(event):
         # display the popup menu
         popup_reference.tk_popup(event.x_root, event.y_root, 0)
 
-
     reference_button.bind("<ButtonRelease-1>", do_popup_ref)
 
     submit_button = ttk.Button(center_frame, text='Submit Code', style='B_DO1.TButton',
-                               cursor="target", command=lambda: submit_function(lesson_input, registers, lesson))
+                               cursor="target", command=lambda: submit_code(lesson_input, registers, lesson))
     previous_lesson_button = ttk.Button(center_frame, text='Previous Lesson', style='B_DO1.TButton',
                                         cursor='target', command=lambda: transfer_to(lambda: draw_lesson(root, ttk,
-                                                                                     get_previous_lesson(), submit_code,
-                                                                                     messagebox.showinfo), center_frame,
+                                                                                                         get_previous_lesson()),
+                                                                                     center_frame,
                                                                                      register_frame))
 
     next_lesson_button = ttk.Button(center_frame, text='Next Lesson', style='B_DO1.TButton',
-                                    cursor='target', command=lambda:  transfer_to(lambda: draw_lesson(root, ttk,
-                                                                                  get_next_lesson(), submit_code,
-                                                                                  messagebox.showinfo), center_frame,
-                                                                                  register_frame))
+                                    cursor='target', command=lambda: transfer_to(lambda: draw_lesson(root, ttk,
+                                                                                                     get_next_lesson()),
+                                                                                 center_frame,
+                                                                                 register_frame))
 
     menu_escape.grid(row=4, column=0, padx=20, pady=20)
     submit_button.grid(row=4, column=2, padx=20)
@@ -197,7 +200,7 @@ def draw_sidebar(sidebar, registers):
     tk.Label(sidebar, text="$fp", width=SIDEBAR_COLUMN_WIDTH).grid(row=31, column=0)
     tk.Label(sidebar, text="$ra", width=SIDEBAR_COLUMN_WIDTH).grid(row=32, column=0)
     for i in range(32):
-        tk.Label(sidebar, text=i, width=SIDEBAR_COLUMN_WIDTH).grid(row=i+1, column=1)
+        tk.Label(sidebar, text=i, width=SIDEBAR_COLUMN_WIDTH).grid(row=i + 1, column=1)
     pass
 
 
@@ -287,14 +290,14 @@ def draw_create_lessons_form(root, ttk):
     lesson_filepath_button.grid(row=3, column=2)
 
     main_menu_button = ttk.Button(main_frame, text='Main Menu', cursor='target', style='menu_buttons.TButton',
-                                  command=lambda: transfer_to(lambda: draw_menu(root, ttk, None), main_frame))
+                                  command=lambda: transfer_to(lambda: draw_menu(root, ttk), main_frame))
 
     def submit_confirmation():
         if bool(lesson_title_entry.get() and not lesson_title_entry.get().isspace()) and bool(
                 lesson_prompt_entry.get() and not lesson_prompt_entry.get().isspace()) and bool(
-                lesson_hint_entry.get() and not lesson_hint_entry.get().isspace()) and all(
-                [re.match('[+-]?\d', register_fields[i]['entry'].get()) is not None for i in register_fields.keys() if
-                 not register_fields[i]['entry'].get().isspace() and register_fields[i]['entry'].get()]):
+            lesson_hint_entry.get() and not lesson_hint_entry.get().isspace()) and all(
+            [re.match('[+-]?\d', register_fields[i]['entry'].get()) is not None for i in register_fields.keys() if
+             not register_fields[i]['entry'].get().isspace() and register_fields[i]['entry'].get()]):
 
             append_new_lesson(initialize_workbook('../lesson_files/' + lesson_title_entry.get(),
                                                   lesson_title=lesson_title_entry.get(),
@@ -408,7 +411,7 @@ def draw_create_lessons_form(root, ttk):
     pass
 
 
-def draw_practice(root, ttk , practice,mainframe):
+def draw_practice(root, ttk):
     # Set fonts for the menu widgets.
     # print(font.families()) to print available font families.
 
@@ -436,30 +439,26 @@ def draw_practice(root, ttk , practice,mainframe):
 
     label_instruction = ttk.Label(center_frame, text="Time to Practice Some MIPS ", style='B_DO1.TLabel')
     lesson_input = tk.Text(center_frame, height=30, width=100)
-    lesson_input.insert(tk.END, "#Hello There, Write Your Code Here For Practice")
+    lesson_input.insert(tk.END, get_text(is_practice=True))
 
     label_instruction.pack(side="top", pady=5)
     lesson_input.pack(pady=20, padx=10)
     lesson = ""
 
     menu_escape = ttk.Button(bottom_frame_top, text='Main Menu', style='B_DO1.TButton', cursor="target",
-                             command=lambda: transfer_to(lambda: draw_menu(root, ttk,lesson), center_frame,
+                             command=lambda: transfer_to(lambda: draw_menu(root, ttk), center_frame,
                                                          bottom_frame_top, bottom_frame_bottom, register_frame))
 
     reference_button = ttk.Button(bottom_frame_bottom, text='Reference', style='B_DO1.TButton',
                                   cursor="target", command=draw_reference)
     run_button = ttk.Button(bottom_frame_top, text='Run Code', style='B_DO1.TButton',
-                               cursor="target", command=lambda: practice(lesson_input, registers))
+                            cursor="target", command=lambda: submit_code(lesson_input, registers, is_practice=True))
     menu_escape.pack(side='left', padx=10)
     run_button.pack(side='right', padx=10)
     reference_button.pack(padx=10)
     pass
 
 
-
-
-#lambda: draw_lesson(root, ttk, get_next_lesson(), submit_code, messagebox.showinfo),
-#                             main_frame)
 def draw_lesson_select(root, ttk):
     main_frame = tk.Frame(root, bg='medium blue', width=root.winfo_width(), height=root.winfo_height())
     main_frame.pack(expand=True, fill="both")
@@ -467,22 +466,26 @@ def draw_lesson_select(root, ttk):
     scframe = VerticalScrolledFrame(main_frame)
     scframe.pack()
 
+    def lesson_selected(i):
+        set_current_lesson_index(i)
+        transfer_to(lambda: draw_lesson(root, ttk, lessons[i]), main_frame)
+        pass
+
     for i in range(len(lessons)):
         color = lambda i=i: 'green' if lessons[i].lesson_completed else 'red'
         btn = tk.Button(scframe.interior, height=1, width=20, relief=tk.FLAT,
-            bg="gray99", fg=color(i),
-            font="Dosis", text=lessons[i].lesson_title, command=lambda i=i: transfer_to(
-                             lambda: draw_lesson(root, ttk, lessons[i], submit_code, messagebox.showinfo), main_frame))
+                        bg="gray99", fg=color(i),
+                        font="Dosis", text=lessons[i].lesson_title, command=lambda i=i: lesson_selected(i))
 
         btn.pack(padx=10, pady=5, side=tk.TOP)
     main_menu_button = ttk.Button(main_frame, text='Main Menu', cursor='target', style='menu_buttons.TButton',
-                                  command=lambda: transfer_to(lambda: draw_menu(root, ttk, None), main_frame))
+                                  command=lambda: transfer_to(lambda: draw_menu(root, ttk), main_frame))
     main_menu_button.pack()
-    #main_frame.pack()
     pass
 
-#tkinter hates scrollbars with buttons so I grabbed this solution from stackoverflow
-#https://stackoverflow.com/questions/31762698/dynamic-button-with-scrollbar-in-tkinter-python
+
+# tkinter hates scrollbars with buttons so I grabbed this solution from stackoverflow
+# https://stackoverflow.com/questions/31762698/dynamic-button-with-scrollbar-in-tkinter-python
 class VerticalScrolledFrame(tk.Frame):
     """A pure Tkinter scrollable frame that actually works!
 
@@ -490,6 +493,7 @@ class VerticalScrolledFrame(tk.Frame):
     * Construct and pack/place/grid normally
     * This frame only allows vertical scrolling
     """
+
     def __init__(self, parent, *args, **kw):
         tk.Frame.__init__(self, parent, *args, **kw)
 
@@ -497,7 +501,7 @@ class VerticalScrolledFrame(tk.Frame):
         vscrollbar = tk.Scrollbar(self, orient=tk.VERTICAL)
         vscrollbar.pack(fill=tk.Y, side=tk.RIGHT, expand=tk.FALSE)
         canvas = tk.Canvas(self, bd=0, highlightthickness=0,
-                        yscrollcommand=vscrollbar.set)
+                           yscrollcommand=vscrollbar.set)
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE)
         vscrollbar.config(command=canvas.yview)
 
@@ -526,4 +530,5 @@ class VerticalScrolledFrame(tk.Frame):
             if interior.winfo_reqwidth() != canvas.winfo_width():
                 # update the inner frame's width to fill the canvas
                 canvas.itemconfigure(interior_id, width=canvas.winfo_width())
+
         canvas.bind('<Configure>', _configure_canvas)

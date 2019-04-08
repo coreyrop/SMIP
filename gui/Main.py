@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from gui.Drawer import draw_menu
-from lessons.Lesson_Transition import get_next_lesson
+
 if __name__ == '__main__':
     root = tk.Tk()
     root.title("SMIP: The Student MIPS Instruction Program")
@@ -19,6 +19,6 @@ if __name__ == '__main__':
     y = (their_height / 2) - (800 / 2)
     root.geometry("%dx%d+%d+%d" % (700, 800, x, y))
     root.configure(background='medium blue')
-    draw_menu(root, ttk, get_next_lesson())
+    draw_menu(root, ttk)
 
     root.mainloop()

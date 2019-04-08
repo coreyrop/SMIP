@@ -12,8 +12,11 @@
 main:
 
 	# your code here
-	this is not real code!!
+	addi $s0, $0, 0
 
 	# All memory structures are placed after the
 	# .data assembler directive
 	.data
+
+
+
