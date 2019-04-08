@@ -48,7 +48,27 @@ class BasicFrameTest(FrameTest):
         return print("Frame Existence Test: Pass")
 
 
+class TextTest(ut.TestCase):
+    def setUp(self):
+        self.text = tk.Text()
+
+
+class BasicTextTest(TextTest):
+    def runTest(self):
+        assert self.text is not None, "TextBox Existence Test: Fail"
+        return print("TextBox Existence Test: Pass")
+
+class GridTest(ut.TestCase):
+    def setUp(self):
+        self.grid = tk.Grid()
+
+
+class BasicGridTest(GridTest):
+    def runTest(self):
+        assert self.grid is not None, "Grid Existence Test: Fail"
+        return print("Grid Existence Test: Pass")
 
 
 if __name__ == '__main__':
     ut.main()
+
