@@ -6,6 +6,7 @@
 
 import unittest as ut
 import tkinter as tk
+from tkinter import font
 
 
 class BasicLabelTestCase(ut.TestCase):
@@ -58,6 +59,7 @@ class BasicTextTest(TextTest):
         assert self.text is not None, "TextBox Existence Test: Fail"
         return print("TextBox Existence Test: Pass")
 
+
 class GridTest(ut.TestCase):
     def setUp(self):
         self.grid = tk.Grid()
@@ -67,6 +69,16 @@ class BasicGridTest(GridTest):
     def runTest(self):
         assert self.grid is not None, "Grid Existence Test: Fail"
         return print("Grid Existence Test: Pass")
+
+class StyleTest(ut.TestCase):
+    def setUp(self):
+        self.style = tk.Style()
+
+
+class BasicStyleTest(StyleTest):
+    def runTest(self):
+        assert self.style is not None, "Style GUI Test: Fail"
+        return print("Style GUI Test: Pass")
 
 
 if __name__ == '__main__':
