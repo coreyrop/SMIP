@@ -26,3 +26,29 @@ class LabelTextConfigurableTestCase(BasicLabelTestCase):
         return print('Label Text Configurable: Pass')
 
 
+class ButtonTest(ut.TestCase):
+    def setUp(self):
+        self.button = tk.Button(text="Button")
+
+
+class BasicButtonTest(ButtonTest):
+    def runTest(self):
+        assert self.button is not None, "Button Existence Test: Fail"
+        return print("Button Existence Test: Pass")
+
+
+class FrameTest(ut.TestCase):
+    def setUp(self):
+        self.frame = tk.Frame()
+
+
+class BasicFrameTest(FrameTest):
+    def runTest(self):
+        assert self.frame is not None, "Frame Existence Test: Fail"
+        return print("Frame Existence Test: Pass")
+
+
+
+
+if __name__ == '__main__':
+    ut.main()
