@@ -124,5 +124,5 @@ def load_lessons():
         return [load_lesson_from_workbook(lesson_path + file) for file in os.listdir(lesson_path) if file.endswith('.xlsx')]
     else:
         # We are testing functionality.
-        lesson_path = '../../../lesson_files/'
+        lesson_path = '../../lesson_files/'
         return [load_lesson_from_workbook(lesson_path + file) for file in os.listdir(lesson_path) if file.endswith('.xlsx')]
