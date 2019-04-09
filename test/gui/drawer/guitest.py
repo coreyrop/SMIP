@@ -6,7 +6,7 @@
 
 import unittest as ut
 import tkinter as tk
-from tkinter import font
+from tkinter import font, ttk
 
 
 class BasicLabelTestCase(ut.TestCase):
@@ -70,9 +70,10 @@ class BasicGridTest(GridTest):
         assert self.grid is not None, "Grid Existence Test: Fail"
         return print("Grid Existence Test: Pass")
 
+
 class StyleTest(ut.TestCase):
     def setUp(self):
-        self.style = tk.Style()
+        self.style = ttk.Style()
 
 
 class BasicStyleTest(StyleTest):
