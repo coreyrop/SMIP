@@ -1,4 +1,5 @@
 import os, sys, subprocess, webbrowser, enum
+from gui.Utilities import get_path
 
 
 class Reference(enum.Enum):
@@ -11,9 +12,10 @@ def draw_reference_path(file_path):
     dirname = os.path.dirname(__file__)
 
     #Removing gui folder from the absolute path
-    dirname = dirname[:-3]
-    
-    filename = os.path.join(dirname,'References', file_path)
+    # dirname = dirname[:-3]
+    #
+    # filename = os.path.join(dirname,'References', file_path)
+    filename = get_path(file_path)
 
     if sys.platform == "win32":
         os.startfile(filename)

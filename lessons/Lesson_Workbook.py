@@ -2,6 +2,7 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.styles import PatternFill, Font
 from .Lesson_Transition import dict
 from .Lesson import Lesson
+from gui.Utilities import get_path
 import re
 import os
 from pathlib import Path
@@ -118,11 +119,6 @@ def load_lesson_from_workbook(filename):
 
 
 def load_lessons():
-    lesson_path = '../lesson_files/'
-    dir_check = Path(lesson_path)
-    if dir_check.is_dir():
-        return [load_lesson_from_workbook(lesson_path + file) for file in os.listdir(lesson_path) if file.endswith('.xlsx')]
-    else:
-        # We are testing functionality.
-        lesson_path = '../../lesson_files/'
-        return [load_lesson_from_workbook(lesson_path + file) for file in os.listdir(lesson_path) if file.endswith('.xlsx')]
+    lesson_path = get_path('/lesson_files/')
+    return [load_lesson_from_workbook(lesson_path + file) for file in os.listdir(lesson_path) if file.endswith('.xlsx')]
+

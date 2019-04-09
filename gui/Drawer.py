@@ -3,7 +3,7 @@ from tkinter import font, messagebox, Menu
 from lessons.Lesson_Transition import get_next_lesson, get_previous_lesson, append_new_lesson, set_current_lesson_index
 from gui.ReferenceWindow import draw_reference
 from gui.LessonPage import submit_code, get_text
-from gui.Utilities import transfer_to, get_relative_file_path
+from gui.Utilities import transfer_to, get_relative_file_path, get_path
 from lessons.Lesson_Workbook import initialize_workbook
 from lessons.Lesson_Transition import get_current_lesson
 from .ReferenceWindow import Reference
@@ -299,7 +299,7 @@ def draw_create_lessons_form(root, ttk):
             [re.match('[+-]?\d', register_fields[i]['entry'].get()) is not None for i in register_fields.keys() if
              not register_fields[i]['entry'].get().isspace() and register_fields[i]['entry'].get()]):
 
-            append_new_lesson(initialize_workbook('../lesson_files/' + lesson_title_entry.get(),
+            append_new_lesson(initialize_workbook(get_path('/lesson_files/' + lesson_title_entry.get()),
                                                   lesson_title=lesson_title_entry.get(),
                                                   lesson_prompt=lesson_prompt_entry.get(),
                                                   lesson_hint=lesson_hint_entry.get(),
