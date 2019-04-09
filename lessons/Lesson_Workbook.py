@@ -4,6 +4,7 @@ from .Lesson_Transition import dict
 from .Lesson import Lesson
 import re
 import os
+from pathlib import Path
 
 
 def get_register_index(register_num, get_value_index=True):
@@ -117,4 +118,11 @@ def load_lesson_from_workbook(filename):
 
 
 def load_lessons():
-    return [load_lesson_from_workbook('../lesson_files/' + file) for file in os.listdir('../lesson_files') if file.endswith('.xlsx')]
+    lesson_path = '../lesson_files/'
+    dir_check = Path(lesson_path)
+    if dir_check.is_dir():
+        return [load_lesson_from_workbook(lesson_path + file) for file in os.listdir(lesson_path) if file.endswith('.xlsx')]
+    else:
+        # We are testing functionality.
+        lesson_path = '../../../lesson_files/'
+        return [load_lesson_from_workbook(lesson_path + file) for file in os.listdir(lesson_path) if file.endswith('.xlsx')]

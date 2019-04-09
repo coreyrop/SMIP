@@ -7,6 +7,9 @@
 import unittest as ut
 import tkinter as tk
 from tkinter import font, ttk
+from gui.Drawer import draw_menu, draw_lesson, draw_create_lessons_form
+from lessons.Lesson_Transition import get_current_lesson
+from gui.Utilities import transfer_to
 
 
 class BasicLabelTestCase(ut.TestCase):
@@ -80,6 +83,26 @@ class BasicStyleTest(StyleTest):
     def runTest(self):
         assert self.style is not None, "Style GUI Test: Fail"
         return print("Style GUI Test: Pass")
+
+
+class BasicTransitionTestCase(ut.TestCase):
+    def setUp(self):
+        self.frame = tk.Tk()
+        self.ttk = ttk
+        self.frame = tk.Frame()
+        draw_menu(self.frame, self.ttk)
+
+
+class TransitionMenuLessonTestCase(BasicTransitionTestCase):
+    def runTest(self):
+        print(self.frame.winfo_width())
+        assert self.frame.winfo_width() <= 700, 'Main Menu width check failed.'
+        transfer_to(draw_lesson(self.frame, self.ttk, get_current_lesson()), self.frame)
+        assert self.frame.winfo_width() <= 875, 'Lesson width check failed.'
+        assert self.frame.winfo_children() is not [], 'Drawn Lesson failed with no children.'
+        transfer_to(draw_menu(self.frame, self.ttk), self.frame)
+        assert self.frame.winfo_width() == 700, 'Main Menu width failed after transfer from Lesson.'
+        return print('Transition Menu Lesson Test: Pass.')
 
 
 if __name__ == '__main__':
