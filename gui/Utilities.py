@@ -2,9 +2,9 @@ from os.path import relpath
 from tkinter.filedialog import askopenfilename
 from pathlib import Path
 
-p = str(Path().absolute())
-i = p.rfind('SMIP')
-top_path = p[:i+len('SMIP')]
+# p = str(Path().absolute())
+# i = str(Path().absolute()).rfind('SMIP')
+top_path = str(Path().absolute())[:str(Path().absolute()).rfind('SMIP')+len('SMIP')]
 
 
 """

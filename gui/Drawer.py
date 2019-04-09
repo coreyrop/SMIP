@@ -58,7 +58,7 @@ def draw_menu(root, ttk):
         lambda: draw_practice(root, ttk), main_frame))
     button4 = ttk.Button(main_frame, text='Reference', style='green/black.TButton',
                          command=lambda: draw_reference(Reference.local_file.value,
-                                                        '../References/MIPS_Green_Sheet.pdf'))
+                                                        '/References/MIPS_Green_Sheet.pdf'))
     create_lesson_button = ttk.Button(main_frame, text='Create Lesson', style='green/black.TButton',
                                       command=lambda: transfer_to(lambda: draw_create_lessons_form(root, ttk),
                                                                   main_frame))

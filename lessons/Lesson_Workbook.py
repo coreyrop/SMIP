@@ -5,7 +5,6 @@ from .Lesson import Lesson
 from gui.Utilities import get_path
 import re
 import os
-from pathlib import Path
 
 
 def get_register_index(register_num, get_value_index=True):

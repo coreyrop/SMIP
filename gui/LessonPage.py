@@ -44,7 +44,7 @@ def submit_code(user_input, register_labels, lesson=None, is_practice=False):
 def get_text(lesson=None, is_practice=False):
     if is_practice:
         try:
-            f = open(get_path(practice_filename))
+            f = open(practice_filename)
         except FileNotFoundError:
             return '# Welcome to Practice! Write some code!!'
     else:
