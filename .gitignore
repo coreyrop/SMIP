@@ -8,3 +8,5 @@ gui/__pycache__/
 pyspim/\.DS_Store
 
 \.DS_Store
+
+pyspim/__pycache__/

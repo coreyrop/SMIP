@@ -20,7 +20,8 @@ def get_register_index(register_num, get_value_index=True):
             return 'E' + str(register_num+1 - 16)
 
 
-def initialize_workbook(filename='temp', **kwargs):
+def initialize_workbook(filename, **kwargs):
+    filename = get_path(filename)
     book = Workbook()
     sheet = book.active
 
