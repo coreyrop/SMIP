@@ -3,8 +3,8 @@ from openpyxl.styles import PatternFill, Font
 from .Lesson_Transition import dict
 from .Lesson import Lesson
 from gui.Utilities import get_path
-import re
 import os
+from string import digits
 
 
 def get_register_index(register_num, get_value_index=True):
@@ -107,8 +107,8 @@ def load_lesson_from_workbook(filename):
     book = load_workbook(filename)
     sheet = book.active
     answer = {i: int(sheet[get_register_index(i)].value) for i in range(32) if
-                sheet[get_register_index(i)].value is not None and re.match('[+-]?\d', sheet[
-                    get_register_index(i)].value) is not None}
+                sheet[get_register_index(i)].value is not None and all(c in digits for c in sheet[
+                    get_register_index(i)].value if not(c is sheet[get_register_index(i)].value[0] and(c == '-' or c == '+')))}
 
     references = []
     index = 2

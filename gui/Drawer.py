@@ -7,8 +7,8 @@ from gui.Utilities import transfer_to, get_relative_file_path, get_path
 from lessons.Lesson_Workbook import initialize_workbook
 from lessons.Lesson_Transition import get_current_lesson
 from .ReferenceWindow import Reference
-import re
 from lessons.Lesson_Transition import lessons
+from string import digits
 
 SIDEBAR_COLUMN_WIDTH = 5
 registers = []
@@ -296,7 +296,7 @@ def draw_create_lessons_form(root, ttk):
         if bool(lesson_title_entry.get() and not lesson_title_entry.get().isspace()) and bool(
                 lesson_prompt_entry.get() and not lesson_prompt_entry.get().isspace()) and bool(
             lesson_hint_entry.get() and not lesson_hint_entry.get().isspace()) and all(
-            [re.match('[+-]?\d', register_fields[i]['entry'].get()) is not None for i in register_fields.keys() if
+            [all(c in digits for c in register_fields[i]['entry'].get() if not (c is register_fields[i]['entry'].get()[0] and (c == '-' or c == '+'))) for i in register_fields.keys() if
              not register_fields[i]['entry'].get().isspace() and register_fields[i]['entry'].get()]):
 
             append_new_lesson(initialize_workbook('/lesson_files/' + lesson_title_entry.get(),
