@@ -18,7 +18,7 @@ if __name__ == '__main__':
     x = (their_width / 2) - (700 / 2)
     y = (their_height / 2) - (800 / 2)
     root.geometry("%dx%d+%d+%d" % (700, 800, x, y))
-    root.configure(background='medium blue')
+    root.configure(background='light grey')
     draw_menu(root, ttk)
 
     root.mainloop()

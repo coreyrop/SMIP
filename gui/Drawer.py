@@ -25,12 +25,12 @@ def draw_menu(root, ttk):
     text_announce = font.Font(family="Gentium Book Basic", size=16, weight="normal")
 
     # background="..." doesn't work...
-    ttk.Style().configure('green/black.TLabel', foreground='black', background='snow', font=menuLabel_font)
+    ttk.Style().configure('green/black.TLabel', foreground='black', background='light grey', font=menuLabel_font)
     ttk.Style().configure('green/black.TButton', foreground='blue2', background='snow', font=menuButton_font,
                           width=25)
     ttk.Style().configure('textBox.TLabel', foreground='black', background='snow', font=text_announce)
 
-    main_frame = tk.Frame(master=root, bg="snow", width=root.winfo_width(), height=root.winfo_height())
+    main_frame = tk.Frame(master=root, bg="light grey", width=root.winfo_width(), height=root.winfo_height())
     # Fill the empty space of the screen.
     main_frame.pack(expand=True, fill="both")
 
@@ -83,12 +83,12 @@ def draw_lesson(root, ttk, lesson):
     menuLabel_font = font.Font(family="Loma", size=22, weight="bold")
     menuButton_font = font.Font(family="Loma", size=20, weight="normal")
     # background="..." doesn't work...
-    ttk.Style().configure('B_DO1.TLabel', foreground='black', background='DarkOrange1', font=menuLabel_font)
-    ttk.Style().configure('B_DO1.TButton', foreground='black', background='DarkOrange1', font=menuButton_font, width=15)
+    ttk.Style().configure('B_DO1.TLabel', foreground='black', background='snow', font=menuLabel_font)
+    ttk.Style().configure('B_DO1.TButton', foreground='blue2', background='snow', font=menuButton_font, width=15)
 
-    lesson_header = tk.Frame(master=root, bg="medium blue")
-    center_frame = tk.Frame(master=root, bg="medium blue")
-    register_frame = tk.Frame(root, width=200, bg='medium blue', height=500, relief='sunken', borderwidth=2)
+    lesson_header = tk.Frame(master=root, bg="snow")
+    center_frame = tk.Frame(master=root, bg="light grey")
+    register_frame = tk.Frame(root, width=200, bg='light grey', height=500, relief='sunken', borderwidth=2)
 
     # TODO Need to properly gridify this page.
     # This is a temp fix for functionality.
@@ -208,7 +208,7 @@ def draw_create_lessons_form(root, ttk):
     # Need extra room because we have 3 rows of info.
     root.minsize(900, root.winfo_screenheight())
     # Cover the whole screen with the frame.
-    main_frame = tk.Frame(root, bg='medium blue', width=root.winfo_width(), height=root.winfo_height())
+    main_frame = tk.Frame(root, bg='light grey', width=root.winfo_width(), height=root.winfo_height())
     # Fill the frame with the background.
     main_frame.pack(expand=True, fill="both")
     # Include separate font choices for human readable text.
@@ -218,15 +218,15 @@ def draw_create_lessons_form(root, ttk):
     register_label_font = font.Font(family="Latin Modern Roman", size=14, weight="bold")
     register_entry_font = font.Font(family="Latin Modern Roman", size=14, weight="normal")
     # Apply style settings.
-    ttk.Style().configure('B_DO1.TLabel', foreground='black', background='DarkOrange1', width=20,
+    ttk.Style().configure('B_DO1.TLabel', foreground='black', background='snow', width=20,
                           font=create_field_font, anchor="CENTER")
-    ttk.Style().configure('B_DO1.TButton', foreground='black', background='DarkOrange1', font=create_button_font,
+    ttk.Style().configure('B_DO1.TButton', foreground='blue2', background='snow', font=create_button_font,
                           width=15)
-    ttk.Style().configure('menu_buttons.TButton', foreground='black', background='DarkOrange1', font=menuButton_font,
+    ttk.Style().configure('menu_buttons.TButton', foreground='blue2', background='snow', font=menuButton_font,
                           width=15, padx=5)
-    ttk.Style().configure('references.TLabel', foreground='black', background='DarkOrange1', width=12,
+    ttk.Style().configure('references.TLabel', foreground='black', background='snow', width=12,
                           font=create_field_font, anchor="CENTER")
-    ttk.Style().configure('TMenuButton', background='DarkOrange1')
+    ttk.Style().configure('TMenuButton', background='snow')
 
     # Define register fields.
     register_fields = {i: {} for i in range(32)}
@@ -418,13 +418,13 @@ def draw_practice(root, ttk):
     menuLabel_font = font.Font(family="Loma", size=22, weight="bold")
     menuButton_font = font.Font(family="Loma", size=20, weight="normal")
     # background="..." doesn't work...
-    ttk.Style().configure('B_DO1.TLabel', foreground='black', background='DarkOrange1', font=menuLabel_font)
-    ttk.Style().configure('B_DO1.TButton', foreground='black', background='DarkOrange1', font=menuButton_font, width=15)
+    ttk.Style().configure('B_DO1.TLabel', foreground='black', background='light grey', font=menuLabel_font)
+    ttk.Style().configure('B_DO1.TButton', foreground='blue2', background='snow', font=menuButton_font, width=15)
 
-    lesson_header = tk.Frame(master=root, bg="medium blue")
-    center_frame = tk.Frame(master=root, bg="medium blue")
-    bottom_frame_top = tk.Frame(master=root, bg="medium blue")
-    bottom_frame_bottom = tk.Frame(master=root, bg="medium blue")
+    lesson_header = tk.Frame(master=root, bg="snow")
+    center_frame = tk.Frame(master=root, bg="light grey")
+    bottom_frame_top = tk.Frame(master=root, bg="light grey")
+    bottom_frame_bottom = tk.Frame(master=root, bg="light grey")
     register_frame = tk.Frame(root, width=200, bg='white', height=500, relief='sunken', borderwidth=2)
 
     registers = []
@@ -438,7 +438,7 @@ def draw_practice(root, ttk):
     bottom_frame_bottom.pack(expand=True, fill="both", side="bottom")
 
     label_instruction = ttk.Label(center_frame, text="Time to Practice Some MIPS ", style='B_DO1.TLabel')
-    lesson_input = tk.Text(center_frame, height=30, width=100)
+    lesson_input = tk.Text(center_frame, height=30, width=100,bd = 2)
     lesson_input.insert(tk.END, get_text(is_practice=True))
 
     label_instruction.pack(side="top", pady=5)
@@ -460,7 +460,7 @@ def draw_practice(root, ttk):
 
 
 def draw_lesson_select(root, ttk):
-    main_frame = tk.Frame(root, bg='medium blue', width=root.winfo_width(), height=root.winfo_height())
+    main_frame = tk.Frame(root, bg='light grey', width=root.winfo_width(), height=root.winfo_height())
     main_frame.pack(expand=True, fill="both")
 
     scframe = VerticalScrolledFrame(main_frame)
@@ -473,7 +473,7 @@ def draw_lesson_select(root, ttk):
 
     for i in range(len(lessons)):
         color = lambda i=i: 'green' if lessons[i].lesson_completed else 'red'
-        btn = tk.Button(scframe.interior, height=1, width=20, relief=tk.FLAT,
+        btn = tk.Button(scframe.interior, height=3, width=30, relief=tk.FLAT,
                         bg="gray99", fg=color(i),
                         font="Dosis", text=lessons[i].lesson_title, command=lambda i=i: lesson_selected(i))
 
