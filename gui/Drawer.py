@@ -25,12 +25,12 @@ def draw_menu(root, ttk):
     text_announce = font.Font(family="Gentium Book Basic", size=16, weight="normal")
 
     # background="..." doesn't work...
-    ttk.Style().configure('green/black.TLabel', foreground='black', background='DarkOrange1', font=menuLabel_font)
-    ttk.Style().configure('green/black.TButton', foreground='black', background='DarkOrange1', font=menuButton_font,
+    ttk.Style().configure('green/black.TLabel', foreground='black', background='snow', font=menuLabel_font)
+    ttk.Style().configure('green/black.TButton', foreground='blue2', background='blue2', font=menuButton_font,
                           width=25)
-    ttk.Style().configure('textBox.TLabel', foreground='black', background='cornflower blue', font=text_announce)
+    ttk.Style().configure('textBox.TLabel', foreground='black', background='snow', font=text_announce)
 
-    main_frame = tk.Frame(master=root, bg="medium blue", width=root.winfo_width(), height=root.winfo_height())
+    main_frame = tk.Frame(master=root, bg="snow", width=root.winfo_width(), height=root.winfo_height())
     # Fill the empty space of the screen.
     main_frame.pack(expand=True, fill="both")
 
