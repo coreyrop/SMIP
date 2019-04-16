@@ -26,7 +26,7 @@ def draw_menu(root, ttk):
 
     # background="..." doesn't work...
     ttk.Style().configure('green/black.TLabel', foreground='black', background='snow', font=menuLabel_font)
-    ttk.Style().configure('green/black.TButton', foreground='blue2', background='blue2', font=menuButton_font,
+    ttk.Style().configure('green/black.TButton', foreground='blue2', background='snow', font=menuButton_font,
                           width=25)
     ttk.Style().configure('textBox.TLabel', foreground='black', background='snow', font=text_announce)
 
