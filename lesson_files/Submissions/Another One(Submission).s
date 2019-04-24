@@ -17,3 +17,4 @@ main:
 	# All memory structures are placed after the
 	# .data assembler directive
 	.data
+

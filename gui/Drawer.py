@@ -62,6 +62,8 @@ def draw_menu(root, ttk):
     create_lesson_button = ttk.Button(main_frame, text='Create Lesson', style='green/black.TButton',
                                       command=lambda: transfer_to(lambda: draw_create_lessons_form(root, ttk),
                                                                   main_frame))
+    setting_button = ttk.Button(main_frame, text='Settings', style='green/black.TButton', command=lambda: transfer_to(
+        lambda: draw_settings(root, ttk), main_frame))
     button5 = ttk.Button(main_frame, text='Exit', style='green/black.TButton', command=quit)
 
     button1.pack(pady=30)
@@ -69,6 +71,7 @@ def draw_menu(root, ttk):
     button3.pack(pady=30)
     button4.pack(pady=30)
     create_lesson_button.pack(pady=30)
+    setting_button.pack(pady=30)
     button5.pack(pady=30)
     pass
 
@@ -456,6 +459,52 @@ def draw_practice(root, ttk):
     menu_escape.pack(side='left', padx=10)
     run_button.pack(side='right', padx=10)
     reference_button.pack(padx=10)
+    pass
+
+
+def draw_settings(root, ttk):
+    # Set fonts for the menu widgets.
+    # print(font.families()) to print available font families.
+
+    menuLabel_font = font.Font(family="Loma", size=22, weight="bold")
+    menuButton_font = font.Font(family="Loma", size=20, weight="normal")
+    # background="..." doesn't work...
+    ttk.Style().configure('B_DO1.TLabel', foreground='black', background='light grey', font=menuLabel_font)
+    ttk.Style().configure('B_DO1.TButton', foreground='blue2', background='snow', font=menuButton_font, width=15)
+
+    lesson_header = tk.Frame(master=root, bg="snow")
+    center_frame = tk.Frame(master=root, bg="light grey")
+    bottom_frame_top = tk.Frame(master=root, bg="light grey")
+    bottom_frame_bottom = tk.Frame(master=root, bg="light grey")
+    register_frame = tk.Frame(root, width=0, bg='white', height=0, relief='sunken', borderwidth=2)
+
+
+
+    # Pack lesson_header Frame over the top of the center_frame.
+    lesson_header.pack(fill="x")
+    center_frame.pack(expand=True, fill="both")
+    bottom_frame_top.pack(expand=True, fill="both")
+    bottom_frame_bottom.pack(expand=True, fill="both", side="bottom")
+
+    label_instruction = ttk.Label(center_frame, text=" Settings ", style='B_DO1.TLabel')
+    label_instruction.pack(side="top", pady=5)
+    lesson = ""
+
+
+
+
+    menu_escape = ttk.Button(bottom_frame_top, text='Main Menu', style='B_DO1.TButton', cursor="target",
+                             command=lambda: transfer_to(lambda: draw_menu(root, ttk), center_frame,
+                                                         bottom_frame_top, bottom_frame_bottom, register_frame))
+
+    save_button = ttk.Button(bottom_frame_top, text='Save', style='B_DO1.TButton',
+                             cursor="target", command=quit)
+
+    exit_button = ttk.Button(bottom_frame_bottom, text='Exit', style='B_DO1.TButton',
+                             cursor="target", command=quit)
+    menu_escape.pack(side='left', padx=10)
+    save_button.pack(side='right', padx=10)
+    exit_button.pack(padx=10)
     pass
 
 
