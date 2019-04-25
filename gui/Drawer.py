@@ -1,9 +1,10 @@
+from tkinter import *
 import tkinter as tk
 from tkinter import font, messagebox, Menu
 from lessons.Lesson_Transition import get_next_lesson, get_previous_lesson, append_new_lesson, set_current_lesson_index
 from gui.ReferenceWindow import draw_reference
 from gui.LessonPage import submit_code, get_text
-from gui.Utilities import transfer_to, get_relative_file_path, get_path
+from gui.Utilities import transfer_to, get_relative_file_path, get_path , load_setting ,save_setting
 from lessons.Lesson_Workbook import initialize_workbook
 from lessons.Lesson_Transition import get_current_lesson
 from .ReferenceWindow import Reference
@@ -15,7 +16,8 @@ registers = []
 
 
 def draw_menu(root, ttk):
-    # Resize in case window has been adjusted
+    textcol, butcol, back, butback = load_setting()
+    print(textcol,butcol,back,butback)
     if root.winfo_width() > 700:
         root.minsize(700, root.winfo_screenheight())
     # Set fonts for the menu widgets.
@@ -25,12 +27,12 @@ def draw_menu(root, ttk):
     text_announce = font.Font(family="Gentium Book Basic", size=16, weight="normal")
 
     # background="..." doesn't work...
-    ttk.Style().configure('green/black.TLabel', foreground='black', background='light grey', font=menuLabel_font)
-    ttk.Style().configure('green/black.TButton', foreground='blue2', background='snow', font=menuButton_font,
+    ttk.Style().configure('green/black.TLabel', foreground=textcol, background=back, font=menuLabel_font)
+    ttk.Style().configure('green/black.TButton', foreground=butcol, background=butback, font=menuButton_font,
                           width=25)
-    ttk.Style().configure('textBox.TLabel', foreground='black', background='snow', font=text_announce)
+    ttk.Style().configure('textBox.TLabel', foreground='black', background=back, font=text_announce)
 
-    main_frame = tk.Frame(master=root, bg="light grey", width=root.winfo_width(), height=root.winfo_height())
+    main_frame = tk.Frame(master=root, bg=back, width=root.winfo_width(), height=root.winfo_height())
     # Fill the empty space of the screen.
     main_frame.pack(expand=True, fill="both")
 
@@ -87,7 +89,7 @@ def draw_lesson(root, ttk, lesson):
     menuButton_font = font.Font(family="Loma", size=20, weight="normal")
     # background="..." doesn't work...
     ttk.Style().configure('B_DO1.TLabel', foreground='black', background='snow', font=menuLabel_font)
-    ttk.Style().configure('B_DO1.TButton', foreground='blue2', background='snow', font=menuButton_font, width=15)
+    ttk.Style().configure('B_DO1.TButton', foreground='black', background='snow', font=menuButton_font, width=15)
 
     lesson_header = tk.Frame(master=root, bg="snow")
     center_frame = tk.Frame(master=root, bg="light grey")
@@ -422,7 +424,7 @@ def draw_practice(root, ttk):
     menuButton_font = font.Font(family="Loma", size=20, weight="normal")
     # background="..." doesn't work...
     ttk.Style().configure('B_DO1.TLabel', foreground='black', background='light grey', font=menuLabel_font)
-    ttk.Style().configure('B_DO1.TButton', foreground='blue2', background='snow', font=menuButton_font, width=15)
+    ttk.Style().configure('B_DO1.TButton', foreground='black', background='snow', font=menuButton_font, width=15)
 
     lesson_header = tk.Frame(master=root, bg="snow")
     center_frame = tk.Frame(master=root, bg="light grey")
@@ -470,7 +472,7 @@ def draw_settings(root, ttk):
     menuButton_font = font.Font(family="Loma", size=20, weight="normal")
     # background="..." doesn't work...
     ttk.Style().configure('B_DO1.TLabel', foreground='black', background='light grey', font=menuLabel_font)
-    ttk.Style().configure('B_DO1.TButton', foreground='blue2', background='snow', font=menuButton_font, width=15)
+    ttk.Style().configure('B_DO1.TButton', foreground='black', background='snow', font=menuButton_font, width=15)
 
     lesson_header = tk.Frame(master=root, bg="snow")
     center_frame = tk.Frame(master=root, bg="light grey")
@@ -488,7 +490,21 @@ def draw_settings(root, ttk):
 
     label_instruction = ttk.Label(center_frame, text=" Settings ", style='B_DO1.TLabel')
     label_instruction.pack(side="top", pady=5)
+
     lesson = ""
+
+
+    label1 = ttk.Label(center_frame, text="  Pick a Theme   ", style='B_DO1.TLabel')
+    label1.pack(pady=2)
+
+    var = IntVar()
+    R1 = ttk.Radiobutton(center_frame, text="Option 1 ( Buffalo Winter )", variable = var,value=1)
+    R1.pack()
+    R2 = ttk.Radiobutton(center_frame, text="Option 2 ( Beach Summer  )", variable = var,value=2)
+    R2.pack()
+    R3 = ttk.Radiobutton(center_frame, text="Option 3 (   UB Spring   )", variable = var, value=3)
+    R3.pack()
+
 
 
 
@@ -496,12 +512,13 @@ def draw_settings(root, ttk):
     menu_escape = ttk.Button(bottom_frame_top, text='Main Menu', style='B_DO1.TButton', cursor="target",
                              command=lambda: transfer_to(lambda: draw_menu(root, ttk), center_frame,
                                                          bottom_frame_top, bottom_frame_bottom, register_frame))
-
     save_button = ttk.Button(bottom_frame_top, text='Save', style='B_DO1.TButton',
-                             cursor="target", command=quit)
+                             cursor="target", command=lambda:save_setting(var))
 
     exit_button = ttk.Button(bottom_frame_bottom, text='Exit', style='B_DO1.TButton',
                              cursor="target", command=quit)
+
+
     menu_escape.pack(side='left', padx=10)
     save_button.pack(side='right', padx=10)
     exit_button.pack(padx=10)
@@ -533,6 +550,9 @@ def draw_lesson_select(root, ttk):
     pass
 
 
+def set(a , x):
+    a = x
+    return a
 # tkinter hates scrollbars with buttons so I grabbed this solution from stackoverflow
 # https://stackoverflow.com/questions/31762698/dynamic-button-with-scrollbar-in-tkinter-python
 class VerticalScrolledFrame(tk.Frame):

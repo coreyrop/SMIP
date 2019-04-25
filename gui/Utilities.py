@@ -41,3 +41,33 @@ def transfer_to(draw_function, *args):
         frame.destroy()
     draw_function()
     pass
+
+
+def save_setting(choice):
+    choice = str(choice.get())
+    f = open("cur_set.txt", "w")
+    if (choice == '1'):
+        f.write("black,black,light grey,snow")
+        pass
+
+    elif(choice == '2'):
+        f.write("black,blue2,light grey,snow")
+        pass
+
+    elif(choice == '3'):
+        f.write("black,blue2,light grey,snow")
+        pass
+
+    f.close()
+    print("Settings Saved Successfully")
+
+
+
+def load_setting():
+    f = open("cur_set.txt", "r")
+    ans = []
+    for x in f.readline().split(','):
+        ans.append(x)
+
+    return ans
+
