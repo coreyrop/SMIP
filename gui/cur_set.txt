@@ -1,1 +1,1 @@
-black,blue2,light grey,snow
+black,blue2,blue2,snow

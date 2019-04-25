@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
 from gui.Drawer import draw_menu
+from gui.Utilities import load_setting
 
 if __name__ == '__main__':
     root = tk.Tk()
     root.title("SMIP: The Student MIPS Instruction Program")
+    textcol, butcol, back, butback = load_setting()
     # Turning off pack propagate to prevent widgets from determining window size.
     # Max and Min window sizes may change.
     root.pack_propagate(0)
@@ -18,7 +20,6 @@ if __name__ == '__main__':
     x = (their_width / 2) - (700 / 2)
     y = (their_height / 2) - (800 / 2)
     root.geometry("%dx%d+%d+%d" % (700, 800, x, y))
-    root.configure(background='light grey')
     draw_menu(root, ttk)
 
     root.mainloop()

@@ -55,7 +55,7 @@ def save_setting(choice):
         pass
 
     elif(choice == '3'):
-        f.write("black,blue2,light grey,snow")
+        f.write("black,blue2,blue2,snow")
         pass
 
     f.close()
