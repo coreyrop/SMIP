@@ -566,6 +566,15 @@ def draw_grading(root, ttk):
     from lessons.Submission import grade_submissions
 
     textcol, butcol, back, butback = load_setting()
+    # Set fonts for the menu widgets.
+    # print(font.families()) to print available font families.
+
+    menuLabel_font = font.Font(family="Loma", size=22, weight="bold")
+    menuButton_font = font.Font(family="Loma", size=20, weight="normal")
+    # background="..." doesn't work...
+    ttk.Style().configure('B_DO1.TLabel', foreground=textcol, background=back, font=menuLabel_font)
+    ttk.Style().configure('B_DO1.TButton', foreground=butcol, background=butback, font=menuButton_font, width=15)
+    
     # Need extra room because we have 3 rows of info.
     root.minsize(900, root.winfo_screenheight())
     # Cover the whole screen with the frame.
