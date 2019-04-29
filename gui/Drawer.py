@@ -67,6 +67,10 @@ def draw_menu(root, ttk):
                                                                   main_frame))
     setting_button = ttk.Button(main_frame, text='Settings', style='green/black.TButton', command=lambda: transfer_to(
         lambda: draw_settings(root, ttk), main_frame))
+
+    grading_button = ttk.Button(main_frame, text='Grading', style='green/black.TButton', command=lambda: transfer_to(
+        lambda: draw_grading(root, ttk), main_frame))
+
     button5 = ttk.Button(main_frame, text='Exit', style='green/black.TButton', command=quit)
 
     button1.pack(pady=30)
@@ -75,6 +79,7 @@ def draw_menu(root, ttk):
     button4.pack(pady=30)
     create_lesson_button.pack(pady=30)
     setting_button.pack(pady=30)
+    grading_button.pack(pady=30)
     button5.pack(pady=30)
     pass
 
@@ -552,6 +557,52 @@ def draw_lesson_select(root, ttk):
     main_menu_button = ttk.Button(main_frame, text='Main Menu', cursor='target', style='menu_buttons.TButton',
                                    command=lambda: transfer_to(lambda: draw_menu(root, ttk), main_frame))
     main_menu_button.pack()
+    pass
+
+
+def draw_grading(root, ttk):
+    from lessons.Lesson_Transition import lessons
+    from .Utilities import get_relative_directory_path
+    from lessons.Submission import grade_submissions
+
+    textcol, butcol, back, butback = load_setting()
+    # Need extra room because we have 3 rows of info.
+    root.minsize(900, root.winfo_screenheight())
+    # Cover the whole screen with the frame.
+    main_frame = tk.Frame(root, bg=back, width=root.winfo_width(), height=root.winfo_height())
+    # Fill the frame with the background.
+    main_frame.pack(expand=True, fill="both")
+
+    lesson_title_label = ttk.Label(main_frame, text='Lesson Title', style='B_DO1.TLabel')
+    lesson_title_label.grid(row=0, column=0, pady=10, padx=20)
+
+    str_var = tk.StringVar(root)
+    lesson_titles = [lesson.lesson_title for lesson in lessons]
+    str_var.set(lesson_titles[0])
+    lesson_menu = tk.OptionMenu(main_frame, str_var, *lesson_titles)
+    lesson_menu.grid(row=0, column=1, pady=10, padx=20)
+
+    submission_directory_path_current_label = ttk.Label(main_frame, text='None Set')
+    submission_directory_path_current_label.grid(row=1, column=0, pady=10, padx=30)
+
+    submission_directory_path_button = ttk.Button(main_frame, text='Select', cursor='target', style='B_DO1.TButton',
+                                        command=lambda: submission_directory_path_current_label.config(
+                                            text=get_relative_directory_path()))
+    submission_directory_path_button.grid(row=1, column=1, pady=10, padx=30)
+
+    def get_lesson_by_title(title):
+        for lesson in lessons:
+            if title == lesson.lesson_title:
+                return lesson
+        return None
+
+    grade_button = ttk.Button(main_frame, text='Grade', style='B_DO1.TButton', cursor='target', command=lambda: grade_submissions(submission_directory_path_current_label['text'], get_lesson_by_title(str_var.get())))
+    grade_button.grid(row=2, column=0, padx=10, pady=30)
+
+    menu_escape = ttk.Button(main_frame, text='Main Menu', style='B_DO1.TButton', cursor="target",
+                             command=lambda: transfer_to(lambda: draw_menu(root, ttk), main_frame))
+
+    menu_escape.grid(row=2, column=1, padx=10, pady=30)
     pass
 
 
