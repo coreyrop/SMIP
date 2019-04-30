@@ -135,7 +135,8 @@ def draw_lesson(root, ttk, lesson):
     reference_button.bind("<ButtonRelease-1>", do_popup_ref)
 
     submit_button = ttk.Button(center_frame, text='Submit Code', style='B_DO1.TButton',
-                               cursor="target", command=lambda: submit_code(lesson_input, registers, lesson))
+                               cursor="target", command=lambda: submit_code(root, center_frame, lesson_input, registers, lesson))
+
     previous_lesson_button = ttk.Button(center_frame, text='Previous Lesson', style='B_DO1.TButton',
                                         cursor='target', command=lambda: transfer_to(lambda: draw_lesson(root, ttk,
                                                                                                          get_previous_lesson()),
@@ -452,7 +453,7 @@ def draw_practice(root, ttk):
     reference_button = ttk.Button(bottom_frame_bottom, text='Reference', style='B_DO1.TButton',
                                   cursor="target", command=draw_reference)
     run_button = ttk.Button(bottom_frame_top, text='Run Code', style='B_DO1.TButton',
-                            cursor="target", command=lambda: submit_code(lesson_input, registers, is_practice=True))
+                            cursor="target", command=lambda: submit_code(root, center_frame, lesson_input, registers, is_practice=True))
     menu_escape.pack(side='left', padx=10)
     run_button.pack(side='right', padx=10)
     reference_button.pack(padx=10)
