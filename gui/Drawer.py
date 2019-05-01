@@ -16,11 +16,8 @@ registers = []
 
 
 def draw_menu(root, ttk):
-
     textcol, butcol, back, butback = load_setting()
     root.configure(background=back)
-    if root.winfo_width() > 700:
-        root.minsize(700, root.winfo_screenheight())
     # Set fonts for the menu widgets.
     # print(font.families()) to print available font families.
     menuLabel_font = font.Font(family="Loma", size=24, weight="bold")
@@ -87,8 +84,6 @@ def draw_menu(root, ttk):
 def draw_lesson(root, ttk, lesson):
     # Resize page.
     textcol, butcol, back, butback = load_setting()
-    if root.winfo_width() < 875:
-        root.minsize(875, root.winfo_screenheight())
 
     # Set fonts for the menu widgets.
     # print(font.families()) to print available font families.
@@ -220,7 +215,7 @@ def draw_sidebar(sidebar, registers):
 def draw_create_lessons_form(root, ttk):
     textcol, butcol, back, butback = load_setting()
     # Need extra room because we have 3 rows of info.
-    root.minsize(900, root.winfo_screenheight())
+    # root.minsize(900, root.winfo_screenheight())
     # Cover the whole screen with the frame.
     main_frame = tk.Frame(root, bg=back, width=root.winfo_width(), height=root.winfo_height())
     # Fill the frame with the background.
