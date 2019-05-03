@@ -1,7 +1,10 @@
 import tkinter as tk
+from tkinter import messagebox
 from lessons.Submission import run_MIPS
 from lessons.Lesson_Transition import write_completed
 from gui.Utilities import get_path
+from os import remove, path
+import shutil
 """
 Draws a lesson to the frame
 root: tkinter root to draw to 
@@ -20,7 +23,7 @@ def submit_code(user_input, register_labels, lesson=None, is_practice=False):
     if is_practice:
         filename = practice_filename
     else:
-        filename = get_submission_file(lesson)
+        filename = 'temp.s'
 
     f = open(filename, 'w')
     f.write(user_input.get("1.0", tk.END))
@@ -35,9 +38,15 @@ def submit_code(user_input, register_labels, lesson=None, is_practice=False):
             write_completed(lesson.lesson_title, True)
             print('Passed!!')
         else:
-            lesson.lesson_completed = False
-            write_completed(lesson.lesson_title, False)
-            print('Failed!!')
+            if lesson.lesson_completed and path.isfile(get_submission_file(lesson)) and messagebox.askyesno('Overwrite Correct Submission?', 'You have a correct submission saved, would you like to overwrite it with this incorrect submission?'):
+                shutil.copy(filename, get_submission_file(lesson))
+                lesson.lesson_completed = False
+                write_completed(lesson.lesson_title, False)
+            else:
+                lesson.lesson_completed = False
+                write_completed(lesson.lesson_title, False)
+                print('Failed!!')
+        remove(filename)
     pass
 
 
