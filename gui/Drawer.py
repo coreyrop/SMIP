@@ -70,14 +70,14 @@ def draw_menu(root, ttk):
 
     button5 = ttk.Button(main_frame, text='Exit', style='green/black.TButton', command=quit)
 
-    button1.pack(pady=30)
-    button2.pack(pady=30)
-    button3.pack(pady=30)
-    button4.pack(pady=30)
-    create_lesson_button.pack(pady=30)
-    setting_button.pack(pady=30)
-    grading_button.pack(pady=30)
-    button5.pack(pady=30)
+    button1.pack(pady=15)
+    button2.pack(pady=15)
+    button3.pack(pady=15)
+    button4.pack(pady=15)
+    create_lesson_button.pack(pady=15)
+    setting_button.pack(pady=15)
+    grading_button.pack(pady=15)
+    button5.pack(pady=15)
     pass
 
 
