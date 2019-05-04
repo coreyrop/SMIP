@@ -1,7 +1,8 @@
 import pickle
+from gui.Utilities import get_path
 lesson_index = 0
 lessons = []
-filename = '../lesson_files/Submissions/profile.pickle'
+filename = get_path('/lesson_files/Submissions/profile.pickle')
 
 
 def set_current_lesson_index(i):

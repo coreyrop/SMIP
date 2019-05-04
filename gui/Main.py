@@ -3,7 +3,7 @@ from tkinter import ttk
 from gui.Drawer import draw_menu
 from gui.Utilities import load_setting
 
-if __name__ == '__main__':
+def main():
     root = tk.Tk()
     root.title("SMIP: The Student MIPS Instruction Program")
     textcol, butcol, back, butback = load_setting()
