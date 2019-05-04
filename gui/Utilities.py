@@ -53,29 +53,27 @@ def transfer_to(draw_function, *args):
 
 def save_setting(choice):
     choice = str(choice.get())
-    f = open("cur_set.txt", "w")
-    if (choice == '1'):
+    f = open(get_path("/gui/Style/cur_set"), "w")
+    if choice == '1':
         f.write("black,black,light grey,snow")
         pass
 
-    elif(choice == '2'):
+    elif choice == '2':
         f.write("black,blue2,light grey,snow")
         pass
 
-    elif(choice == '3'):
+    elif choice == '3':
         f.write("black,blue2,blue2,snow")
         pass
 
     f.close()
-    print("Settings Saved Successfully")
-
 
 
 def load_setting():
-    f = open("cur_set.txt", "r")
+    f = open(get_path("/gui/Style/cur_set"), "r")
     ans = []
     for x in f.readline().split(','):
         ans.append(x)
-
+    f.close()
     return ans
 
