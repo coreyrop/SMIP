@@ -35,22 +35,28 @@ def submit_code(root, center_frame, user_input, register_labels, lesson=None, is
 
     if not is_practice:
         if lesson.check_solution(results):
+            shutil.copy(filename, get_submission_file(lesson))
             lesson.lesson_completed = True
             write_completed(lesson.lesson_title, True)
+
             alert = tk.Label(center_frame, background='green2', text='    PASSED    ', font=menuButton_font)
             alert.grid(row=4, column=2)
             root.update()
             alert.after(3000, alert.grid_forget())
+
         else:
             alert = tk.Label(center_frame, background='red2', text='    FAILED    ', font=menuButton_font)
             alert.grid(row=4, column=2)
             root.update()
             alert.after(3000, alert.grid_forget())
-            if lesson.lesson_completed and path.isfile(get_submission_file(lesson)) and messagebox.askyesno('Overwrite Correct Submission?', 'You have a correct submission saved, would you like to overwrite it with this incorrect submission?'):
-                shutil.copy(filename, get_submission_file(lesson))
-                lesson.lesson_completed = False
-                write_completed(lesson.lesson_title, False)
+
+            if lesson.lesson_completed and path.isfile(get_submission_file(lesson)):
+                if messagebox.askyesno('Overwrite Correct Submission?', 'You have a correct submission saved, would you like to overwrite it with this incorrect submission?'):
+                    shutil.copy(filename, get_submission_file(lesson))
+                    lesson.lesson_completed = False
+                    write_completed(lesson.lesson_title, False)
             else:
+                shutil.copy(filename, get_submission_file(lesson))
                 lesson.lesson_completed = False
                 write_completed(lesson.lesson_title, False)
         remove(filename)
