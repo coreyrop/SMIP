@@ -12,12 +12,9 @@
 main:
 
 	# your code here
-	addi $t4, $0, 93
-	addi $s3, $0, 43
+    addi $r12, $r0, 92
 
 	# All memory structures are placed after the
 	# .data assembler directive
 	.data
-
-
 

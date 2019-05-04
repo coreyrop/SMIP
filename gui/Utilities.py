@@ -1,5 +1,5 @@
 from os.path import relpath
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilename, askdirectory
 from pathlib import Path
 
 
@@ -21,6 +21,14 @@ def destroy_content(frame):
 def get_relative_file_path(filetypes):
     try:
         s = askopenfilename(filetypes=filetypes)
+        return '/'+relpath(s, top_path)
+    except ValueError:
+        return 'None Set'
+
+
+def get_relative_directory_path():
+    try:
+        s = askdirectory()
         return '/'+relpath(s, top_path)
     except ValueError:
         return 'None Set'
