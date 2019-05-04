@@ -37,7 +37,7 @@ def draw_menu(root, ttk):
     label_banner = ttk.Label(main_frame, text='\tWelcome to SMIP.\n Your Best Friend for Learning MIPS ',
                              style='green/black.TLabel', width=700, anchor="center")
     label_plug = ttk.Label(main_frame, style='textBox.TLabel', text=' Our repo: https://github.com/coreyrop/SMIP\n\t'
-                                                                    '-Last Updated: 03/26/2019-')
+                                                                    '-Last Updated: 05/04/2019-')
 
     label_banner.pack(pady=10)
     label_plug.pack(side="bottom", pady=5)
@@ -155,6 +155,8 @@ def draw_lesson(root, ttk, lesson):
                                                                                                      get_next_lesson()),
                                                                                  center_frame,
                                                                                  register_frame))
+    help_button = ttk.Button(center_frame, text='Help ?', style='B_DO1.TButton', cursor='target', command=print("A"))
+
 
     menu_escape.grid(row=4, column=0, padx=20, pady=20)
     submit_button.grid(row=4, column=2, padx=20)
@@ -162,6 +164,7 @@ def draw_lesson(root, ttk, lesson):
     next_lesson_button.grid(row=5, column=2, padx=20)
     hint_button.grid(row=4, column=1, padx=20, pady=20)
     reference_button.grid(row=5, column=1, padx=20)
+    help_button.grid(row=6, column=1, padx=20, pady=20)
     pass
 
 
@@ -414,9 +417,13 @@ def draw_create_lessons_form(root, ttk):
                                        style='menu_buttons.TButton')
     reference_menu_button.bind("<ButtonRelease-1>", lambda event: popup.tk_popup(event.x_root, event.y_root, 0))
 
+    help_button = ttk.Button(main_frame, text='Help ?', style='menu_buttons.TButton', cursor='target',
+                             command=print("A"))
+
     reference_menu_button.grid(row=2, column=2, padx=10)
     main_menu_button.grid(row=40, column=0, sticky='s', pady=15)
     submit_lesson_button.grid(row=40, column=1, sticky='s', pady=15)
+    help_button.grid(row=40, column=2, sticky='s', pady=15)
     pass
 
 
@@ -463,9 +470,12 @@ def draw_practice(root, ttk):
                                   cursor="target", command=draw_reference)
     run_button = ttk.Button(bottom_frame_top, text='Run Code', style='B_DO1.TButton',
                             cursor="target", command=lambda: submit_code(root, center_frame, lesson_input, registers, is_practice=True))
+    help_button = ttk.Button(bottom_frame_bottom, text='Help ?', style='B_DO1.TButton',
+                             cursor='target', command=print("A"))
     menu_escape.pack(side='left', padx=10)
     run_button.pack(side='right', padx=10)
-    reference_button.pack(padx=10)
+    reference_button.pack(side='left', padx=10)
+    help_button.pack(side='right', padx=10)
     pass
 
 
@@ -520,13 +530,16 @@ def draw_settings(root, ttk):
     save_button = ttk.Button(bottom_frame_top, text='Save', style='B_DO1.TButton',
                              cursor="target", command=lambda: save_setting(var))
 
+    help_button = ttk.Button(bottom_frame_bottom, text='Help ?', style='B_DO1.TButton', cursor='target', command=print("A"))
+
     exit_button = ttk.Button(bottom_frame_bottom, text='Exit', style='B_DO1.TButton',
                              cursor="target", command=quit)
 
 
     menu_escape.pack(side='left', padx=10)
     save_button.pack(side='right', padx=10)
-    exit_button.pack(padx=10)
+    help_button.pack(side='left', padx=10)
+    exit_button.pack(side='right', padx=10)
     pass
 
 
