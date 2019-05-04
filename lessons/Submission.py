@@ -14,12 +14,13 @@ def run_MIPS(filename):
 
 
 def grade_submissions(directory_path, lesson):
-    from os import listdir
+    from os import listdir, path
     global_path = get_path(directory_path)
-    suffix = '_'+lesson.lesson_title+'(Submission).s'
-    submissions = [(submission[:submission.find(suffix)], global_path+'/'+submission) for submission in listdir(global_path) if submission.endswith(suffix)]
-    results = check_all_submissions(submissions, lesson)
-    create_grade_workbook(lesson, results)
+    if path.isdir(global_path):
+        suffix = '_'+lesson.lesson_title+'(Submission).s'
+        submissions = [(submission[:submission.find(suffix)], global_path+'/'+submission) for submission in listdir(global_path) if submission.endswith(suffix)]
+        results = check_all_submissions(submissions, lesson)
+        create_grade_workbook(lesson, results)
 
 
 def create_grade_workbook(lesson, results):
