@@ -4,12 +4,20 @@ We are working to create an educational program that will be used to help studen
 
 # OS REQUIREMENTS:
 - Linux
-- MacOS
+- UNIX (MacOS)
+
+# Required Python Packages:
+- tkinter
+- openpyxl
+- pexpect
+
+# Other Software Requirements:
+- SPIM 
 
 # INSTRUCTIONS:
 - Download our repository.
 - Change directory to SMIP/.
-(May need to rename directory name to SMIP if named otherwise i.e. SMIP_{branch}.  It will not work otherwise.)
+(May need to rename directory name to SMIP if named otherwise i.e. SMIP-{branch}.  It will not work otherwise.)
 - Execute "python3 Main.py".
 
 # ASSOCIATED SCRUMBOARD:
