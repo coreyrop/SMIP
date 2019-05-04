@@ -2,7 +2,7 @@ from tkinter import *
 import tkinter as tk
 from tkinter import font, messagebox, Menu
 from lessons.Lesson_Transition import get_next_lesson, get_previous_lesson, append_new_lesson, set_current_lesson_index
-from gui.ReferenceWindow import draw_reference
+from gui.ReferenceWindow import draw_reference, Reference
 from gui.LessonPage import submit_code, get_text
 from gui.Utilities import transfer_to, get_relative_file_path, get_path , load_setting ,save_setting
 from lessons.Lesson_Workbook import initialize_workbook
@@ -37,7 +37,7 @@ def draw_menu(root, ttk):
     label_banner = ttk.Label(main_frame, text='\tWelcome to SMIP.\n Your Best Friend for Learning MIPS ',
                              style='green/black.TLabel', width=700, anchor="center")
     label_plug = ttk.Label(main_frame, style='textBox.TLabel', text=' Our repo: https://github.com/coreyrop/SMIP\n\t'
-                                                                    '-Last Updated: 03/26/2019-')
+                                                                    '-Last Updated: 05/04/2019-')
 
     label_banner.pack(pady=10)
     label_plug.pack(side="bottom", pady=5)
@@ -70,14 +70,14 @@ def draw_menu(root, ttk):
 
     button5 = ttk.Button(main_frame, text='Exit', style='green/black.TButton', command=quit)
 
-    button1.pack(pady=30)
-    button2.pack(pady=30)
-    button3.pack(pady=30)
-    button4.pack(pady=30)
-    create_lesson_button.pack(pady=30)
-    setting_button.pack(pady=30)
-    grading_button.pack(pady=30)
-    button5.pack(pady=30)
+    button1.pack(pady=15)
+    button2.pack(pady=15)
+    button3.pack(pady=15)
+    button4.pack(pady=15)
+    create_lesson_button.pack(pady=15)
+    setting_button.pack(pady=15)
+    grading_button.pack(pady=15)
+    button5.pack(pady=15)
     pass
 
 
@@ -155,6 +155,8 @@ def draw_lesson(root, ttk, lesson):
                                                                                                      get_next_lesson()),
                                                                                  center_frame,
                                                                                  register_frame))
+    help_button = ttk.Button(center_frame, text='Help ?', style='B_DO1.TButton', cursor='target', command=lambda: draw_reference(Reference.local_file.value, '/References/Internal References/Lesson_Page_Help.pdf'))
+
 
     menu_escape.grid(row=4, column=0, padx=20, pady=20)
     submit_button.grid(row=4, column=2, padx=20)
@@ -162,6 +164,7 @@ def draw_lesson(root, ttk, lesson):
     next_lesson_button.grid(row=5, column=2, padx=20)
     hint_button.grid(row=4, column=1, padx=20, pady=20)
     reference_button.grid(row=5, column=1, padx=20)
+    help_button.grid(row=6, column=1, padx=20, pady=20)
     pass
 
 
@@ -414,9 +417,13 @@ def draw_create_lessons_form(root, ttk):
                                        style='menu_buttons.TButton')
     reference_menu_button.bind("<ButtonRelease-1>", lambda event: popup.tk_popup(event.x_root, event.y_root, 0))
 
+    help_button = ttk.Button(main_frame, text='Help ?', style='menu_buttons.TButton', cursor='target',
+                             command=lambda: draw_reference(Reference.local_file.value, '/References/Internal References/Lesson_Creation_Help.pdf'))
+
     reference_menu_button.grid(row=2, column=2, padx=10)
     main_menu_button.grid(row=40, column=0, sticky='s', pady=15)
     submit_lesson_button.grid(row=40, column=1, sticky='s', pady=15)
+    help_button.grid(row=40, column=2, sticky='s', pady=15)
     pass
 
 
@@ -435,13 +442,13 @@ def draw_practice(root, ttk):
     center_frame = tk.Frame(master=root, bg=back)
     bottom_frame_top = tk.Frame(master=root, bg=back)
     bottom_frame_bottom = tk.Frame(master=root, bg=back)
-    register_frame = tk.Frame(root, width=200, bg='white', height=500, relief='sunken', borderwidth=2)
+    register_frame = tk.Frame(root, width=200, bg=back, height=500, relief='sunken', borderwidth=2)
 
     registers = []
     draw_sidebar(register_frame, registers)
 
     # Pack lesson_header Frame over the top of the center_frame.
-    register_frame.pack(expand=True, fill='both', side='left')
+    register_frame.pack(side='right')
     lesson_header.pack(fill="x")
     center_frame.pack(expand=True, fill="both")
     bottom_frame_top.pack(expand=True, fill="both")
@@ -460,12 +467,15 @@ def draw_practice(root, ttk):
                                                          bottom_frame_top, bottom_frame_bottom, register_frame))
 
     reference_button = ttk.Button(bottom_frame_bottom, text='Reference', style='B_DO1.TButton',
-                                  cursor="target", command=draw_reference)
+                                  cursor="target", command=lambda: draw_reference(Reference.local_file.value, '/References/MIPS_Green_Sheet.pdf'))
     run_button = ttk.Button(bottom_frame_top, text='Run Code', style='B_DO1.TButton',
                             cursor="target", command=lambda: submit_code(root, center_frame, lesson_input, registers, is_practice=True))
+    help_button = ttk.Button(bottom_frame_bottom, text='Help ?', style='B_DO1.TButton',
+                             cursor='target', command=lambda: draw_reference(Reference.local_file.value, '/References/Internal References/Practice_Help.pdf'))
     menu_escape.pack(side='left', padx=10)
     run_button.pack(side='right', padx=10)
-    reference_button.pack(padx=10)
+    reference_button.pack(side='left', padx=10)
+    help_button.pack(side='right', padx=10)
     pass
 
 
@@ -520,21 +530,27 @@ def draw_settings(root, ttk):
     save_button = ttk.Button(bottom_frame_top, text='Save', style='B_DO1.TButton',
                              cursor="target", command=lambda: save_setting(var))
 
+    help_button = ttk.Button(bottom_frame_bottom, text='Help ?', style='B_DO1.TButton', cursor='target', command=lambda: draw_reference(Reference.local_file.value, '/References/Internal References/Settings_Help.pdf'))
+
     exit_button = ttk.Button(bottom_frame_bottom, text='Exit', style='B_DO1.TButton',
                              cursor="target", command=quit)
 
 
     menu_escape.pack(side='left', padx=10)
     save_button.pack(side='right', padx=10)
-    exit_button.pack(padx=10)
+    help_button.pack(side='left', padx=10)
+    exit_button.pack(side='right', padx=10)
     pass
 
 
 def draw_lesson_select(root, ttk):
     textcol, butcol, back, butback = load_setting()
+
+    menuButton_font = font.Font(family="Loma", size=20, weight="normal")
+    ttk.Style().configure('B_DO1.TButton', foreground=butcol, background=butback, font=menuButton_font, width=15)
+
     main_frame = tk.Frame(root, bg=back, width=root.winfo_width(), height=root.winfo_height())
     main_frame.pack(expand=True, fill="both")
-    ttk.Style().configure('menu_buttons.TButton', foreground=butcol, background=butback, width=15, padx=5)
     scframe = VerticalScrolledFrame(main_frame)
     scframe.pack()
 
@@ -550,9 +566,13 @@ def draw_lesson_select(root, ttk):
                         font="Dosis", text=lessons[i].lesson_title, command=lambda i=i: lesson_selected(i))
 
         btn.pack(padx=10, pady=5, side=tk.TOP)
-    main_menu_button = ttk.Button(main_frame, text='Main Menu', cursor='target', style='menu_buttons.TButton',
+    main_menu_button = ttk.Button(main_frame, text='Main Menu', cursor='target', style='B_DO1.TButton',
                                    command=lambda: transfer_to(lambda: draw_menu(root, ttk), main_frame))
-    main_menu_button.pack()
+
+    help_button = ttk.Button(main_frame, text='Help ?', style='B_DO1.TButton', cursor='target', command=lambda: draw_reference(Reference.local_file.value, '/References/Internal References/Lesson_Select_Help.pdf'))
+
+    main_menu_button.pack(side='left')
+    help_button.pack(side='right')
     pass
 
 
@@ -602,12 +622,14 @@ def draw_grading(root, ttk):
         return None
 
     grade_button = ttk.Button(main_frame, text='Grade', style='B_DO1.TButton', cursor='target', command=lambda: grade_submissions(submission_directory_path_current_label['text'], get_lesson_by_title(str_var.get())))
+    help_button = ttk.Button(main_frame, text='Help ?', style='B_DO1.TButton', cursor='target', command=lambda: draw_reference(Reference.local_file.value, '/References/Internal References/Grading_Help.pdf'))
     grade_button.grid(row=2, column=0, padx=10, pady=30)
 
     menu_escape = ttk.Button(main_frame, text='Main Menu', style='B_DO1.TButton', cursor="target",
                              command=lambda: transfer_to(lambda: draw_menu(root, ttk), main_frame))
 
     menu_escape.grid(row=2, column=1, padx=10, pady=30)
+    help_button.grid(row=2, column=2, padx=10, pady=30)
     pass
 
 
