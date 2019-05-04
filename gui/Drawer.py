@@ -442,13 +442,13 @@ def draw_practice(root, ttk):
     center_frame = tk.Frame(master=root, bg=back)
     bottom_frame_top = tk.Frame(master=root, bg=back)
     bottom_frame_bottom = tk.Frame(master=root, bg=back)
-    register_frame = tk.Frame(root, width=200, bg='white', height=500, relief='sunken', borderwidth=2)
+    register_frame = tk.Frame(root, width=200, bg=back, height=500, relief='sunken', borderwidth=2)
 
     registers = []
     draw_sidebar(register_frame, registers)
 
     # Pack lesson_header Frame over the top of the center_frame.
-    register_frame.pack(expand=True, fill='both', side='left')
+    register_frame.pack(side='right')
     lesson_header.pack(fill="x")
     center_frame.pack(expand=True, fill="both")
     bottom_frame_top.pack(expand=True, fill="both")
@@ -615,12 +615,14 @@ def draw_grading(root, ttk):
         return None
 
     grade_button = ttk.Button(main_frame, text='Grade', style='B_DO1.TButton', cursor='target', command=lambda: grade_submissions(submission_directory_path_current_label['text'], get_lesson_by_title(str_var.get())))
+    help_button = ttk.Button(main_frame, text='Help ?', style='B_DO1.TButton', cursor='target', command= print("a"))
     grade_button.grid(row=2, column=0, padx=10, pady=30)
 
     menu_escape = ttk.Button(main_frame, text='Main Menu', style='B_DO1.TButton', cursor="target",
                              command=lambda: transfer_to(lambda: draw_menu(root, ttk), main_frame))
 
     menu_escape.grid(row=2, column=1, padx=10, pady=30)
+    help_button.grid(row=2, column=2, padx=10, pady=30)
     pass
 
 
