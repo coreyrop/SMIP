@@ -545,9 +545,12 @@ def draw_settings(root, ttk):
 
 def draw_lesson_select(root, ttk):
     textcol, butcol, back, butback = load_setting()
+
+    menuButton_font = font.Font(family="Loma", size=20, weight="normal")
+    ttk.Style().configure('B_DO1.TButton', foreground=butcol, background=butback, font=menuButton_font, width=15)
+
     main_frame = tk.Frame(root, bg=back, width=root.winfo_width(), height=root.winfo_height())
     main_frame.pack(expand=True, fill="both")
-    ttk.Style().configure('menu_buttons.TButton', foreground=butcol, background=butback, width=15, padx=5)
     scframe = VerticalScrolledFrame(main_frame)
     scframe.pack()
 
@@ -563,9 +566,13 @@ def draw_lesson_select(root, ttk):
                         font="Dosis", text=lessons[i].lesson_title, command=lambda i=i: lesson_selected(i))
 
         btn.pack(padx=10, pady=5, side=tk.TOP)
-    main_menu_button = ttk.Button(main_frame, text='Main Menu', cursor='target', style='menu_buttons.TButton',
+    main_menu_button = ttk.Button(main_frame, text='Main Menu', cursor='target', style='B_DO1.TButton',
                                    command=lambda: transfer_to(lambda: draw_menu(root, ttk), main_frame))
-    main_menu_button.pack()
+
+    help_button = ttk.Button(main_frame, text='Help ?', style='B_DO1.TButton', cursor='target', command=print("A"))
+
+    main_menu_button.pack(side='left')
+    help_button.pack(side='right')
     pass
 
 
