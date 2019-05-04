@@ -1,4 +1,8 @@
-from pyspim import Spim
+try:
+    from pyspim import Spim
+except ImportError:
+    from pyspim.pyspim import Spim
+
 from gui.Utilities import get_path
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill

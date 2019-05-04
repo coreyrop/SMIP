@@ -51,5 +51,5 @@ class TestGetPrevLesson2(ut.TestCase):
         self.assertEqual(lesson, prev)
 
 
-if __name__ == '__main__':
+if __name__ == '__name__':
     ut.main()
