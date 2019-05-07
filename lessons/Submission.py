@@ -26,6 +26,16 @@ def grade_submissions(directory_path, lesson):
         results = check_all_submissions(submissions, lesson)
         create_grade_workbook(lesson, results)
 
+def get_sheet_column(reg_num, recursed=False):
+    from string import ascii_uppercase
+
+    if reg_num < 24:
+        if recursed:
+            return ascii_uppercase[reg_num]
+        else:
+            return ascii_uppercase[reg_num+2]
+    else:
+        return 'A' + get_sheet_column(reg_num-24, True)
 
 def create_grade_workbook(lesson, results):
     filename = get_path('/grading/'+lesson.lesson_title+'(Grades).xlsx')
@@ -37,16 +47,7 @@ def create_grade_workbook(lesson, results):
     redFill = PatternFill(start_color='FF0000', end_color='FF0000', fill_type='solid')
     sheet.column_dimensions['A'].width = 50
 
-    def get_sheet_column(reg_num, recursed=False):
-        from string import ascii_uppercase
 
-        if reg_num < 24:
-            if recursed:
-                return ascii_uppercase[reg_num]
-            else:
-                return ascii_uppercase[reg_num+2]
-        else:
-            return 'A' + get_sheet_column(reg_num-24, True)
 
     sheet['A1'] = 'Name'
     sheet['B1'] = 'Pass/Fail'
