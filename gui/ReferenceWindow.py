@@ -3,8 +3,8 @@ from gui.Utilities import get_path
 
 
 class Reference(enum.Enum):
-    web_link = 'web_link'
-    local_file = 'local_file'
+    web_link = "web_link"
+    local_file = "local_file"
 
 
 def draw_reference_path(file_path):
@@ -25,7 +25,6 @@ def draw_reference_link(file_link):
 
 def draw_reference(type, path):
     if Reference[type].value == Reference.local_file.value:
-        draw_reference_path(file_path = path)
+        draw_reference_path(file_path=path)
     elif Reference[type].value == Reference.web_link.value:
-        draw_reference_link(file_link = path)
-
+        draw_reference_link(file_link=path)

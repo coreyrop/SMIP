@@ -5,174 +5,169 @@ import time
 import re
 
 
-
 class Spim(object):
-    '''Main Spim class. See main() below for demo.
+    """Main Spim class. See main() below for demo.
 
     Requires the command line version of Spim, available here:
     http://sourceforge.net/projects/spimsimulator/
-    '''
+    """
 
-    def __init__(self, debug = False):
-        '''Spawns a Spim instance'''
+    def __init__(self, debug=False):
+        """Spawns a Spim instance"""
 
         self.debug = debug
-        
-        self.sp = pexpect.spawn ('spim')
-        self._expect('\(spim\) ')
-        if not b'(spim)' in self.sp.after:
-            #print 'one more...'
-            #self._expect('.*')
-            raise Exception('Could not get spim prompt. Is it installed?\n\nOutput was:\n%s' % self.sp.after)
 
+        self.sp = pexpect.spawn("spim")
+        self._expect("\(spim\) ")
+        if not b"(spim)" in self.sp.after:
+            # print 'one more...'
+            # self._expect('.*')
+            raise Exception(
+                "Could not get spim prompt. Is it installed?\n\nOutput was:\n%s"
+                % self.sp.after
+            )
 
     def _sendline(self, line):
-        '''Expect a response from the underlying child process. Respects debug mode. Private.'''
+        """Expect a response from the underlying child process. Respects debug mode. Private."""
 
         if not self.sp.isalive():
-            raise Exception('Child spim process died.')
+            raise Exception("Child spim process died.")
         if self.debug:
-            print ('\nSENDING:', line)
+            print("\nSENDING:", line)
         self.sp.sendline(line)
 
+    def _expect(self, pattern, timeout=-1, searchwindowsize=None):
+        """Expect a response from the underlying child process. Respects debug mode. Private."""
 
-    def _expect(self, pattern, timeout = -1, searchwindowsize = None):
-        '''Expect a response from the underlying child process. Respects debug mode. Private.'''
-        
         if not self.sp.isalive():
-            raise Exception('Child spim process died.')
+            raise Exception("Child spim process died.")
         if self.debug:
-            print ('\nEXPECTING:', pattern)
-        index = self.sp.expect(pattern, timeout = timeout, searchwindowsize = searchwindowsize)
+            print("\nEXPECTING:", pattern)
+        index = self.sp.expect(
+            pattern, timeout=timeout, searchwindowsize=searchwindowsize
+        )
         if self.debug:
-            print ('GOT BEFORE: "%s"' %self.sp.before)
-            print ('GOT  AFTER: "%s"' % self.sp.after)
+            print('GOT BEFORE: "%s"' % self.sp.before)
+            print('GOT  AFTER: "%s"' % self.sp.after)
         return index
 
-
     def load(self, filename):
-        '''Loads a program from a *.s file'''
-        
+        """Loads a program from a *.s file"""
+
         self._sendline('load "%s"' % filename)
-        index = self._expect(['Cannot open file.*\(spim\) ',
-                             '\(spim\) ',
-                             pexpect.EOF,
-                             pexpect.TIMEOUT],
-                            timeout = 1)
+        index = self._expect(
+            ["Cannot open file.*\(spim\) ", "\(spim\) ", pexpect.EOF, pexpect.TIMEOUT],
+            timeout=1,
+        )
         if index == 0:
             raise Exception('Could not load file "%s"' % filename)
         elif index == 1:
             pass
         elif index == 2:
-            raise Exception('Spim EOF: process died?')
+            raise Exception("Spim EOF: process died?")
         elif index == 3:
-            raise Exception('Spim timeout')
+            raise Exception("Spim timeout")
         else:
-            raise Exception('Unknown error with expect.')
+            raise Exception("Unknown error with expect.")
 
-
-    def run(self, timeout = 10, timeoutFatal = False):
-        '''Runs the (presumably) loaded program. Returns None on
+    def run(self, timeout=10, timeoutFatal=False):
+        """Runs the (presumably) loaded program. Returns None on
         successful exection or string containing text output on
-        timeout.'''
+        timeout."""
 
-        self._sendline('run')
-        index = self._expect(['.*\(spim\) ',
-                             pexpect.EOF,
-                             pexpect.TIMEOUT],
-                            timeout = timeout)
+        self._sendline("run")
+        index = self._expect(
+            [".*\(spim\) ", pexpect.EOF, pexpect.TIMEOUT], timeout=timeout
+        )
 
         if index == 0:
             pass
         elif index == 1:
-            raise Exception('Spim EOF: process died?')
+            raise Exception("Spim EOF: process died?")
         elif index == 2:
             # Timeout, so just grab whatever is there
-            index = self._expect(['.*',
-                                  pexpect.EOF,
-                                  pexpect.TIMEOUT],
-                                 timeout = .1)
+            index = self._expect([".*", pexpect.EOF, pexpect.TIMEOUT], timeout=0.1)
             if index == 0 or index == 1:
                 return self.sp.before + self.sp.after
             else:
-                return ''   # Another timeout
+                return ""  # Another timeout
         else:
-            raise Exception('Unknown error with expect.')
+            raise Exception("Unknown error with expect.")
 
-
-    def reg(self, register, timeout = 1):
-        '''Gets the current value from the given register.
+    def reg(self, register, timeout=1):
+        """Gets the current value from the given register.
 
         Any of the following calling conventions is fine:
         spim.reg(5)
         spim.reg("$5")
         spim.reg("t0")
         spim.reg("$v0")
-        '''
-        
+        """
+
         if type(register) is int:
             register = str(register)
-        if register[0:1] is not '$':
-            register = '$' + register
-        self._sendline('print %s' % register)
-        index = self._expect(['.*Reg.*0x([0-9a-f])+.*\(spim\) ',
-                             '.*Unknown label:.*\(spim\) ',
-                             pexpect.EOF,
-                             pexpect.TIMEOUT],
-                            timeout = timeout)
+        if register[0:1] is not "$":
+            register = "$" + register
+        self._sendline("print %s" % register)
+        index = self._expect(
+            [
+                ".*Reg.*0x([0-9a-f])+.*\(spim\) ",
+                ".*Unknown label:.*\(spim\) ",
+                pexpect.EOF,
+                pexpect.TIMEOUT,
+            ],
+            timeout=timeout,
+        )
 
         if index == 0:
-            #print 'good. got stuff.'
-            match = re.search('.*Reg.* = (0x[0-9a-f]+) .*\(spim\) ', str(self.sp.after), re.DOTALL)
-            value = int(match.group(1), 0)   # base 0 -> interpret 0x... as hex
+            # print 'good. got stuff.'
+            match = re.search(
+                ".*Reg.* = (0x[0-9a-f]+) .*\(spim\) ", str(self.sp.after), re.DOTALL
+            )
+            value = int(match.group(1), 0)  # base 0 -> interpret 0x... as hex
             return value
         elif index == 1:
-            raise Exception('Spim: Unknown label: %s' % register)
+            raise Exception("Spim: Unknown label: %s" % register)
         elif index == 2:
-            raise Exception('Spim EOF: process died?')
+            raise Exception("Spim EOF: process died?")
         elif index == 3:
-            raise Exception('Spim timeout')
+            raise Exception("Spim timeout")
         else:
-            raise Exception('Unknown error with expect.')
+            raise Exception("Unknown error with expect.")
 
+    def quit(self, timeout=1):
+        """Quits the child spim process"""
 
-    def quit(self, timeout = 1):
-        '''Quits the child spim process'''
-        
-        self._sendline('quit')
-        index = self._expect([pexpect.EOF,
-                             pexpect.TIMEOUT],
-                            timeout = timeout)
+        self._sendline("quit")
+        index = self._expect([pexpect.EOF, pexpect.TIMEOUT], timeout=timeout)
 
         if index == 0:
             pass
         elif index == 1:
-            raise Exception('Spim timeout')
+            raise Exception("Spim timeout")
         else:
-            raise Exception('Unknown error with expect.')
-
+            raise Exception("Unknown error with expect.")
 
 
 def main():
-    sp = Spim(debug = False)
+    sp = Spim(debug=False)
 
-    sp.load('test.s')             # load a .s file
-    sp.run()                      # run it
-    print ('t0 is', sp.reg(8))      # get the value from a register
-    print ('(should be 123)')
-
-    # If this line is uncommented, it should produce an error:
-    #print '999 is', sp.reg(999)
+    sp.load("test.s")  # load a .s file
+    sp.run()  # run it
+    print("t0 is", sp.reg(8))  # get the value from a register
+    print("(should be 123)")
 
     # If this line is uncommented, it should produce an error:
-    #sp.load('file_that_does_not_exist.s')
+    # print '999 is', sp.reg(999)
 
-    print ('quitting...')
-    sp.quit()                     # quit the underlying spim process
-    
-    print ('done.')
+    # If this line is uncommented, it should produce an error:
+    # sp.load('file_that_does_not_exist.s')
+
+    print("quitting...")
+    sp.quit()  # quit the underlying spim process
+
+    print("done.")
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

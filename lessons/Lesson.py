@@ -1,4 +1,3 @@
-
 class Lesson:
 
     """
@@ -7,6 +6,7 @@ class Lesson:
     answer: Dict that stores the necessary registers as keys
         and the correct final values as their value mapping
     """
+
     def __init__(self, title, prompt, answer, hint, reference, base_code, completed):
         self.lesson_prompt = prompt
         self.lesson_hint = hint
@@ -24,6 +24,7 @@ class Lesson:
     
     :returns True if solution is correct, False otherwise
     """
+
     def check_solution(self, solution):
         for answer_register, answer_value in self.lesson_answer.items():
             if answer_value != solution.get(answer_register, None):

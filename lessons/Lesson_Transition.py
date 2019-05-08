@@ -1,7 +1,9 @@
 import pickle
+from gui.Utilities import get_path
+
 lesson_index = 0
 lessons = []
-filename = '../lesson_files/Submissions/profile.pickle'
+filename = get_path("/lesson_files/Submissions/profile.pickle")
 
 
 def set_current_lesson_index(i):
@@ -44,7 +46,7 @@ def append_new_lesson(new_lesson):
 def read_from_pickle(filename):
     dict = {}
     try:
-        with open(filename, 'rb') as file:
+        with open(filename, "rb") as file:
             dict = pickle.load(file)
     except FileNotFoundError:
         return dict
@@ -56,13 +58,14 @@ dict = read_from_pickle(filename)
 
 def write_completed(title, bool):
     dict[title] = bool
-    with open(filename, 'wb') as file:
+    with open(filename, "wb") as file:
         pickle.dump(dict, file)
     pass
 
 
 def init_lessons():
     from lessons.Lesson_Workbook import load_lessons
+
     global lessons
     lessons = load_lessons()
 

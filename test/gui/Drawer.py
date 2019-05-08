@@ -14,20 +14,22 @@ from gui.Utilities import transfer_to
 
 class BasicLabelTestCase(ut.TestCase):
     def setUp(self):
-        self.label = tk.Label(text='Test Label.')
+        self.label = tk.Label(text="Test Label.")
 
 
 class LabelExistsTestCase(BasicLabelTestCase):
     def runTest(self):
-        assert self.label is not None, 'Label does not exist.'
+        assert self.label is not None, "Label does not exist."
         return print("Label Exists Test : Pass")
 
 
 class LabelTextConfigurableTestCase(BasicLabelTestCase):
     def runTest(self):
-        self.label.configure(text='Test Text.')
-        assert self.label.cget('text') == 'Test Text.', 'Label failed to configure text variable.'
-        return print('Label Text Configurable: Pass')
+        self.label.configure(text="Test Text.")
+        assert (
+            self.label.cget("text") == "Test Text."
+        ), "Label failed to configure text variable."
+        return print("Label Text Configurable: Pass")
 
 
 class ButtonTest(ut.TestCase):
@@ -95,15 +97,23 @@ class BasicTransitionTestCase(ut.TestCase):
 class TransitionMenuLessonTestCase(BasicTransitionTestCase):
     def runTest(self):
         print(self.frame.winfo_width())
-        assert self.frame.winfo_width() <= 700, 'Main Menu width check failed.'
-        transfer_to(lambda: draw_lesson(self.frame, self.ttk, get_current_lesson()), *self.frame.children.values())
-        assert self.frame.winfo_width() <= 875, 'Lesson width check failed.'
-        assert self.frame.winfo_children() is not [], 'Drawn Lesson failed with no children.'
-        transfer_to(lambda: draw_menu(self.frame, self.ttk), *self.frame.children.values())
-        assert self.frame.winfo_width() <= 700, 'Main Menu width failed after transfer from Lesson.'
-        return print('Transition Menu Lesson Test: Pass.')
+        assert self.frame.winfo_width() <= 700, "Main Menu width check failed."
+        transfer_to(
+            lambda: draw_lesson(self.frame, self.ttk, get_current_lesson()),
+            *self.frame.children.values()
+        )
+        assert self.frame.winfo_width() <= 875, "Lesson width check failed."
+        assert (
+            self.frame.winfo_children() is not []
+        ), "Drawn Lesson failed with no children."
+        transfer_to(
+            lambda: draw_menu(self.frame, self.ttk), *self.frame.children.values()
+        )
+        assert (
+            self.frame.winfo_width() <= 700
+        ), "Main Menu width failed after transfer from Lesson."
+        return print("Transition Menu Lesson Test: Pass.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     ut.main()
-
