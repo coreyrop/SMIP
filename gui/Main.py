@@ -3,6 +3,7 @@ from tkinter import ttk
 from gui.Drawer import draw_menu
 from gui.Utilities import load_setting
 
+
 def main():
     root = tk.Tk()
     root.title("SMIP: The Student MIPS Instruction Program")
@@ -13,14 +14,14 @@ def main():
     # Max size of window is the dimensions of their screen.
     their_width = root.winfo_screenwidth()
     their_height = root.winfo_screenheight()
-    #root.maxsize(their_width, their_height)
+    # root.maxsize(their_width, their_height)
     # Buttons need room, so we need max height.
-    #root.minsize(700, their_height)
+    # root.minsize(700, their_height)
     # Put app at the center of the screen.
     x = (their_width / 2) - (960 / 2)
     y = (their_height / 2) - (900 / 2)
     root.geometry("%dx%d+%d+%d" % (960, 900, x, y))
-    root.configure(background='medium blue')
+    root.configure(background="medium blue")
     root.resizable(0, 0)
     draw_menu(root, ttk)
 

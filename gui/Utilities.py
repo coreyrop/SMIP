@@ -3,7 +3,7 @@ from tkinter.filedialog import askopenfilename, askdirectory
 from pathlib import Path
 
 
-top_path = str(Path().absolute())[:str(Path().absolute()).rfind('SMIP')+len('SMIP')]
+top_path = str(Path().absolute())[: str(Path().absolute()).rfind("SMIP") + len("SMIP")]
 
 
 """
@@ -21,21 +21,22 @@ def destroy_content(frame):
 def get_relative_file_path(filetypes):
     try:
         s = askopenfilename(filetypes=filetypes)
-        return '/'+relpath(s, top_path)
+        return "/" + relpath(s, top_path)
     except ValueError:
-        return 'None Set'
+        return "None Set"
 
 
 def get_relative_directory_path():
     try:
         s = askdirectory()
-        return '/'+relpath(s, top_path)
+        return "/" + relpath(s, top_path)
     except ValueError:
-        return 'None Set'
+        return "None Set"
 
 
 def get_path(relpath):
     return top_path + relpath
+
 
 """
 Destroys the given frames content and then draws new content to that frame using the given function
@@ -54,15 +55,15 @@ def transfer_to(draw_function, *args):
 def save_setting(choice):
     choice = str(choice.get())
     f = open(get_path("/gui/Style/cur_set"), "w")
-    if choice == '1':
+    if choice == "1":
         f.write("black,black,light grey,snow")
         pass
 
-    elif choice == '2':
+    elif choice == "2":
         f.write("black,blue2,light grey,snow")
         pass
 
-    elif choice == '3':
+    elif choice == "3":
         f.write("black,blue2,blue2,snow")
         pass
 
@@ -72,8 +73,7 @@ def save_setting(choice):
 def load_setting():
     f = open(get_path("/gui/Style/cur_set"), "r")
     ans = []
-    for x in f.readline().split(','):
+    for x in f.readline().split(","):
         ans.append(x)
     f.close()
     return ans
-
